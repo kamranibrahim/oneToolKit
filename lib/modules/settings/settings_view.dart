@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -121,14 +120,6 @@ class SettingsView extends GetView<SettingsController> {
                   ),
                 ),
                 const Divider(height: 1),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.storefront_outlined),
-                  title: const Text('Store listing'),
-                  subtitle: const Text('Copy App Store / Play description'),
-                  onTap: () => _showStoreListing(context),
-                ),
-                const Divider(height: 1),
                 FutureBuilder<PackageInfo>(
                   future: PackageInfo.fromPlatform(),
                   builder: (context, snapshot) {
@@ -208,42 +199,6 @@ class SettingsView extends GetView<SettingsController> {
         content: SingleChildScrollView(child: Text(body)),
         actions: [
           TextButton(onPressed: Get.back, child: const Text('OK')),
-        ],
-      ),
-    );
-  }
-
-  void _showStoreListing(BuildContext context) {
-    final text = [
-      StoreCopy.name,
-      StoreCopy.subtitle,
-      '',
-      StoreCopy.promotionalText,
-      '',
-      StoreCopy.description.trim(),
-      '',
-      'Keywords: ${StoreCopy.keywords}',
-    ].join('\n');
-
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Store listing'),
-        content: SingleChildScrollView(child: SelectableText(text)),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: text));
-              Get.back();
-              Get.snackbar(
-                'Copied',
-                'Store listing copied to clipboard',
-                snackPosition: SnackPosition.BOTTOM,
-                margin: const EdgeInsets.all(16),
-              );
-            },
-            child: const Text('Copy all'),
-          ),
-          TextButton(onPressed: Get.back, child: const Text('Close')),
         ],
       ),
     );
