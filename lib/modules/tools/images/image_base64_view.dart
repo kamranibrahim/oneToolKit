@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -119,7 +120,8 @@ class _ImageBase64ViewState extends State<ImageBase64View>
       'decoded_${DateTime.now().millisecondsSinceEpoch}.png',
     );
     await File(path).writeAsBytes(bytes, flush: true);
-    await Share.shareXFiles([XFile(path)]);
+    if (!mounted) return;
+    await shareFiles(context, [XFile(path)]);
   }
 
   @override

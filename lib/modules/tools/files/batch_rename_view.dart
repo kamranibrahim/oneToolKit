@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -84,7 +85,8 @@ class _BatchRenameViewState extends State<BatchRenameView> {
       }
       await encoder.close();
 
-      await Share.shareXFiles([XFile(zipPath, mimeType: 'application/zip')]);
+      if (!mounted) return;
+      await shareFiles(context, [XFile(zipPath, mimeType: 'application/zip')]);
       await ToolScaffold.logAction(
         toolId: 'batch_rename',
         toolName: 'Batch Rename',

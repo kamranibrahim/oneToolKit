@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -47,7 +48,8 @@ class _ImagesToPdfViewState extends State<ImagesToPdfView> {
       final path = p.join(dir.path, 'images_${DateTime.now().millisecondsSinceEpoch}.pdf');
       final out = File(path);
       await out.writeAsBytes(await doc.save());
-      await Share.shareXFiles([XFile(path)]);
+      if (!mounted) return;
+      await shareFiles(context, [XFile(path)]);
       await ToolScaffold.logAction(
         toolId: 'images_to_pdf',
         toolName: 'Images to PDF',

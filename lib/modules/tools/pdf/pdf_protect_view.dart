@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../../widgets/tool_scaffold.dart';
@@ -81,7 +82,8 @@ class _PdfProtectViewState extends State<PdfProtectView> {
         'protected_${DateTime.now().millisecondsSinceEpoch}.pdf',
       );
       await File(outPath).writeAsBytes(outBytes, flush: true);
-      await Share.shareXFiles([
+      if (!mounted) return;
+      await shareFiles(context, [
         XFile(outPath, mimeType: 'application/pdf'),
       ]);
       await ToolScaffold.logAction(

@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -62,7 +63,8 @@ class _ImageRotateViewState extends State<ImageRotateView> {
       final dir = await getTemporaryDirectory();
       final path = p.join(dir.path, 'rotated_${DateTime.now().millisecondsSinceEpoch}.jpg');
       await File(path).writeAsBytes(_bytes!);
-      await Share.shareXFiles([XFile(path)]);
+      if (!mounted) return;
+      await shareFiles(context, [XFile(path)]);
       await ToolScaffold.logAction(
         toolId: 'image_rotate',
         toolName: 'Rotate Image',

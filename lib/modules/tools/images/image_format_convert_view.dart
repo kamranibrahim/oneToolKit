@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -233,7 +234,7 @@ class _ImageFormatConvertViewState extends State<ImageFormatConvertView> {
           if (_outputPath != null) ...[
             const SizedBox(height: 12),
             FilledButton.icon(
-              onPressed: () => Share.shareXFiles([XFile(_outputPath!)]),
+              onPressed: () => shareFiles(context, [XFile(_outputPath!)]),
               icon: const Icon(Icons.ios_share_rounded),
               label: const Text('Share converted image'),
             ),

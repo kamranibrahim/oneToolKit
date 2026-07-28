@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf_combiner/models/merge_input.dart';
 import 'package:pdf_combiner/pdf_combiner.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -59,18 +60,20 @@ class _PdfMergeViewState extends State<PdfMergeView> {
         outputPath: outPath,
       );
 
-      await Share.shareXFiles([XFile(resultPath, mimeType: 'application/pdf')]);
+      if (!mounted) return;
+      await shareFiles(context, [XFile(resultPath, mimeType: 'application/pdf')]);
       await ToolScaffold.logAction(
         toolId: 'pdf_merge',
         toolName: 'Merge PDF',
         action: 'Merged',
         detail: '${_files.length} files',
       );
+      if (!mounted) return;
       setState(() => _status = 'Merged ${_files.length} PDFs');
     } catch (e) {
-      setState(() => _status = 'Merge failed: $e');
+      if (mounted) setState(() => _status = 'Merge failed: $e');
     } finally {
-      setState(() => _busy = false);
+      if (mounted) setState(() => _busy = false);
     }
   }
 

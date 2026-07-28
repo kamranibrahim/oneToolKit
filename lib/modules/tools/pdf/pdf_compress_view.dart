@@ -10,6 +10,7 @@ import 'package:pdf_combiner/models/image_scale.dart';
 import 'package:pdf_combiner/models/merge_input.dart';
 import 'package:pdf_combiner/pdf_combiner.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -166,7 +167,7 @@ class _PdfCompressViewState extends State<PdfCompressView> {
           if (_outputPath != null) ...[
             const SizedBox(height: 12),
             FilledButton.icon(
-              onPressed: () => Share.shareXFiles([
+              onPressed: () => shareFiles(context, [
                 XFile(_outputPath!, mimeType: 'application/pdf'),
               ]),
               icon: const Icon(Icons.ios_share_rounded),

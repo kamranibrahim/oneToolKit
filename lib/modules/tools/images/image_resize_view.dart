@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -65,7 +66,8 @@ class _ImageResizeViewState extends State<ImageResizeView> {
       final dir = await getTemporaryDirectory();
       final path = p.join(dir.path, 'resized_${w}x$h.jpg');
       await File(path).writeAsBytes(encoded);
-      await Share.shareXFiles([XFile(path)]);
+      if (!mounted) return;
+      await shareFiles(context, [XFile(path)]);
       await ToolScaffold.logAction(
         toolId: 'image_resize',
         toolName: 'Resize Image',

@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../../widgets/tool_scaffold.dart';
@@ -84,7 +85,8 @@ class _PdfWatermarkViewState extends State<PdfWatermarkView> {
       final count = document.pages.count;
       document.dispose();
       final out = await PdfToolHelpers.writeTempPdf(bytes, 'watermarked');
-      await Share.shareXFiles([XFile(out.path, mimeType: 'application/pdf')]);
+      if (!mounted) return;
+      await shareFiles(context, [XFile(out.path, mimeType: 'application/pdf')]);
       await ToolScaffold.logAction(
         toolId: 'pdf_watermark',
         toolName: 'Watermark PDF',

@@ -9,6 +9,7 @@ import 'package:pdf_combiner/models/image_scale.dart';
 import 'package:pdf_combiner/models/merge_input.dart';
 import 'package:pdf_combiner/pdf_combiner.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -91,7 +92,8 @@ class _PdfSplitViewState extends State<PdfSplitView> {
 
   Future<void> _shareAll() async {
     if (_pagePdfs.isEmpty) return;
-    await Share.shareXFiles(
+    if (!mounted) return;
+    await shareFiles(context, 
       _pagePdfs.map((path) => XFile(path, mimeType: 'application/pdf')).toList(),
     );
   }
@@ -150,7 +152,7 @@ class _PdfSplitViewState extends State<PdfSplitView> {
                           subtitle: Text(p.basename(_pagePdfs[index])),
                           trailing: IconButton(
                             icon: const Icon(Icons.ios_share_rounded),
-                            onPressed: () => Share.shareXFiles([
+                            onPressed: () => shareFiles(context, [
                               XFile(_pagePdfs[index], mimeType: 'application/pdf'),
                             ]),
                           ),

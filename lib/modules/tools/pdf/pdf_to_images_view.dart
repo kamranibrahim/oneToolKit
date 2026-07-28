@@ -9,6 +9,7 @@ import 'package:pdf_combiner/models/image_scale.dart';
 import 'package:pdf_combiner/models/merge_input.dart';
 import 'package:pdf_combiner/pdf_combiner.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -81,7 +82,8 @@ class _PdfToImagesViewState extends State<PdfToImagesView> {
 
   Future<void> _shareAll() async {
     if (_images.isEmpty) return;
-    await Share.shareXFiles(_images.map(XFile.new).toList());
+    if (!mounted) return;
+    await shareFiles(context, _images.map(XFile.new).toList());
   }
 
   @override

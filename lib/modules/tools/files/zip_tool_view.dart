@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -55,7 +56,8 @@ class _ZipToolViewState extends State<ZipToolView>
         await encoder.addFile(File(file.path!), file.name);
       }
       await encoder.close();
-      await Share.shareXFiles([XFile(outPath, mimeType: 'application/zip')]);
+      if (!mounted) return;
+      await shareFiles(context, [XFile(outPath, mimeType: 'application/zip')]);
       await ToolScaffold.logAction(
         toolId: 'zip_tool',
         toolName: 'ZIP Archive',
@@ -97,7 +99,8 @@ class _ZipToolViewState extends State<ZipToolView>
 
       setState(() => _extractSummary = 'Extracted ${extracted.length} file(s)');
       if (extracted.isNotEmpty) {
-        await Share.shareXFiles(extracted);
+        if (!mounted) return;
+        await shareFiles(context, extracted);
       }
       await ToolScaffold.logAction(
         toolId: 'zip_tool',

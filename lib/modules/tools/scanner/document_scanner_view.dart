@@ -4,6 +4,7 @@ import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -78,7 +79,8 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
           ),
         )
         .toList();
-    await Share.shareXFiles(files);
+    if (!mounted) return;
+    await shareFiles(context, files);
   }
 
   @override

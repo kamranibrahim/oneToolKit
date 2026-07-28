@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:native_cutout/native_cutout.dart';
 import 'package:path/path.dart' as p;
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -117,7 +118,8 @@ class _BackgroundRemoveViewState extends State<BackgroundRemoveView> {
   Future<void> _share() async {
     final path = _resultPath;
     if (path == null) return;
-    await Share.shareXFiles([XFile(path, mimeType: 'image/png')]);
+    if (!mounted) return;
+    await shareFiles(context, [XFile(path, mimeType: 'image/png')]);
   }
 
   @override

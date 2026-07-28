@@ -5,6 +5,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:share_plus/share_plus.dart';
+import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -76,7 +77,7 @@ class _ImageCropViewState extends State<ImageCropView> {
             ),
             const SizedBox(height: 12),
             FilledButton.icon(
-              onPressed: () => Share.shareXFiles([XFile(_croppedPath!)]),
+              onPressed: () => shareFiles(context, [XFile(_croppedPath!)]),
               icon: const Icon(Icons.ios_share_rounded),
               label: const Text('Share cropped image'),
             ),
