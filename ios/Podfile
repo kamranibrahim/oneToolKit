@@ -27,6 +27,13 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 
 flutter_ios_podfile_setup
 
+# Relabel ML Kit arm64 device slices for Apple Silicon iOS 26+ simulators.
+# https://pub.dev/packages/google_mlkit_commons#apple-silicon-ios-simulator-ios-26
+require File.expand_path(
+  '.symlinks/plugins/google_mlkit_commons/ios/scripts/apple_silicon_simulator',
+  __dir__,
+)
+
 $iOSVersion = '15.5'
 
 target 'Runner' do
@@ -50,6 +57,14 @@ post_install do |installer|
       if Gem::Version.new($iOSVersion) > Gem::Version.new(config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] || '0')
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = $iOSVersion
       end
+      # Ensure simulator builds are not forced off arm64 (needed on Apple Silicon).
+      excluded = config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]']
+      if excluded.is_a?(String) && excluded.split.include?('arm64')
+        config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] =
+          excluded.split.reject { |a| a == 'arm64' }.join(' ')
+      end
     end
   end
+
+  mlkit_apple_silicon_simulator_patch(installer)
 end
