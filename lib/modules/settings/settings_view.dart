@@ -1,0 +1,134 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../core/constants/app_constants.dart';
+import '../../data/catalog/tool_catalog.dart';
+import 'settings_controller.dart';
+
+class SettingsView extends GetView<SettingsController> {
+  const SettingsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final available = ToolCatalog.available.length;
+    final total = ToolCatalog.all.length;
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Settings')),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        children: [
+          _Card(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Appearance',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Obx(() {
+                  return SegmentedButton<ThemeMode>(
+                    segments: const [
+                      ButtonSegment(
+                        value: ThemeMode.system,
+                        label: Text('System'),
+                        icon: Icon(Icons.brightness_auto_rounded, size: 18),
+                      ),
+                      ButtonSegment(
+                        value: ThemeMode.light,
+                        label: Text('Light'),
+                        icon: Icon(Icons.light_mode_rounded, size: 18),
+                      ),
+                      ButtonSegment(
+                        value: ThemeMode.dark,
+                        label: Text('Dark'),
+                        icon: Icon(Icons.dark_mode_rounded, size: 18),
+                      ),
+                    ],
+                    selected: {controller.themeMode.value},
+                    onSelectionChanged: (s) => controller.setThemeMode(s.first),
+                  );
+                }),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          _Card(
+            child: Column(
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.privacy_tip_outlined),
+                  title: const Text('Privacy'),
+                  subtitle: const Text('Everything runs locally when possible'),
+                  onTap: () => _showInfo(
+                    'Privacy',
+                    'OneToolkit is privacy-first. Your files stay on your device. '
+                    'No account is required. Cloud features (if added later) will always be optional.',
+                  ),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.info_outline_rounded),
+                  title: const Text('About'),
+                  subtitle: Text('$available of $total tools available · v1.0.0'),
+                  onTap: () => _showInfo(
+                    AppConstants.appName,
+                    '${AppConstants.appTagline}\n\n'
+                    'A privacy-first utility toolkit — PDF, images, QR, text, '
+                    'and developer tools in one free offline-first app.\n\n'
+                    'Phase 1 · July 2026',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Free forever · No forced sign-up · Offline-first',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showInfo(String title, String body) {
+    Get.dialog(
+      AlertDialog(
+        title: Text(title),
+        content: Text(body),
+        actions: [
+          TextButton(onPressed: Get.back, child: const Text('OK')),
+        ],
+      ),
+    );
+  }
+}
+
+class _Card extends StatelessWidget {
+  const _Card({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardTheme.color,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: child,
+    );
+  }
+}
