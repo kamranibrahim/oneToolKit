@@ -224,6 +224,15 @@ abstract final class ToolCatalog {
       route: AppRoutes.colorPicker,
       keywords: ['hex', 'eyedropper'],
     ),
+    const ToolModel(
+      id: 'image_base64',
+      name: 'Image ↔ Base64',
+      description: 'Encode images or decode data URIs',
+      category: ToolCategory.images,
+      icon: Icons.data_object_outlined,
+      route: AppRoutes.imageBase64,
+      keywords: ['data uri', 'encode', 'decode'],
+    ),
 
     // ── Documents ────────────────────────────────────────
     const ToolModel(
@@ -488,6 +497,44 @@ abstract final class ToolCatalog {
       route: AppRoutes.calculator,
       keywords: ['math', 'expression', 'compute'],
     ),
+    const ToolModel(
+      id: 'tip_calculator',
+      name: 'Tip Calculator',
+      description: 'Tip and bill split helper',
+      category: ToolCategory.developer,
+      icon: Icons.restaurant_rounded,
+      route: AppRoutes.tipCalculator,
+      keywords: ['bill', 'gratuity', 'split'],
+      isTrending: true,
+    ),
+    const ToolModel(
+      id: 'percentage_calculator',
+      name: 'Percentage Calculator',
+      description: 'Percent of, is %, and change',
+      category: ToolCategory.developer,
+      icon: Icons.percent_rounded,
+      route: AppRoutes.percentageCalculator,
+      keywords: ['percent', 'discount', 'change'],
+    ),
+    const ToolModel(
+      id: 'stopwatch_timer',
+      name: 'Stopwatch & Timer',
+      description: 'Laps and countdown timer',
+      category: ToolCategory.developer,
+      icon: Icons.timer_rounded,
+      route: AppRoutes.stopwatchTimer,
+      keywords: ['countdown', 'laps', 'clock'],
+      isRecommended: true,
+    ),
+    const ToolModel(
+      id: 'age_calculator',
+      name: 'Age Calculator',
+      description: 'Exact age between two dates',
+      category: ToolCategory.developer,
+      icon: Icons.cake_rounded,
+      route: AppRoutes.ageCalculator,
+      keywords: ['birthday', 'date', 'years'],
+    ),
 
     // ── Files ────────────────────────────────────────────
     const ToolModel(
@@ -521,8 +568,18 @@ abstract final class ToolCatalog {
       keywords: ['same', 'hash', 'md5'],
       isRecommended: true,
     ),
+    const ToolModel(
+      id: 'batch_rename',
+      name: 'Batch Rename',
+      description: 'Rename many files with a pattern',
+      category: ToolCategory.files,
+      icon: Icons.drive_file_rename_outline_rounded,
+      route: AppRoutes.batchRename,
+      keywords: ['rename', 'pattern', 'bulk'],
+      isTrending: true,
+    ),
 
-    // ── AI (future) ──────────────────────────────────────
+    // ── AI ───────────────────────────────────────────────
     const ToolModel(
       id: 'ai_summarize',
       name: 'Summarize',

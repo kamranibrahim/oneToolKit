@@ -19,11 +19,13 @@ import '../../modules/tools/developer/timestamp_view.dart';
 import '../../modules/tools/developer/uuid_generator_view.dart';
 import '../../modules/tools/documents/csv_json_view.dart';
 import '../../modules/tools/documents/yaml_json_view.dart';
+import '../../modules/tools/files/batch_rename_view.dart';
 import '../../modules/tools/files/duplicate_finder_view.dart';
 import '../../modules/tools/files/file_checksum_view.dart';
 import '../../modules/tools/files/zip_tool_view.dart';
 import '../../modules/tools/images/background_remove_view.dart';
 import '../../modules/tools/images/color_picker_view.dart';
+import '../../modules/tools/images/image_base64_view.dart';
 import '../../modules/tools/images/image_compress_view.dart';
 import '../../modules/tools/images/image_crop_view.dart';
 import '../../modules/tools/images/image_format_convert_view.dart';
@@ -49,8 +51,12 @@ import '../../modules/tools/qr/email_qr_view.dart';
 import '../../modules/tools/qr/qr_generate_view.dart';
 import '../../modules/tools/qr/qr_scan_view.dart';
 import '../../modules/tools/qr/wifi_qr_view.dart';
+import '../../modules/tools/utilities/age_calculator_view.dart';
 import '../../modules/tools/utilities/calculator_view.dart';
 import '../../modules/tools/utilities/password_generator_view.dart';
+import '../../modules/tools/utilities/percentage_calculator_view.dart';
+import '../../modules/tools/utilities/stopwatch_timer_view.dart';
+import '../../modules/tools/utilities/tip_calculator_view.dart';
 import '../../modules/tools/utilities/unit_converter_view.dart';
 import '../../modules/tools/text/base64_view.dart';
 import '../../modules/tools/text/case_converter_view.dart';
@@ -116,6 +122,7 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.colorPicker, page: () => const ColorPickerView()),
     GetPage(name: AppRoutes.imageMetadata, page: () => const ImageMetadataView()),
     GetPage(name: AppRoutes.bgRemove, page: () => const BackgroundRemoveView()),
+    GetPage(name: AppRoutes.imageBase64, page: () => const ImageBase64View()),
 
     // PDF
     GetPage(name: AppRoutes.pdfMerge, page: () => const PdfMergeView()),
@@ -135,6 +142,7 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.zipTool, page: () => const ZipToolView()),
     GetPage(name: AppRoutes.checksum, page: () => const FileChecksumView()),
     GetPage(name: AppRoutes.duplicateFinder, page: () => const DuplicateFinderView()),
+    GetPage(name: AppRoutes.batchRename, page: () => const BatchRenameView()),
 
     // AI
     GetPage(name: AppRoutes.ocr, page: () => const OcrView()),
@@ -157,6 +165,13 @@ abstract final class AppPages {
     ),
     GetPage(name: AppRoutes.unitConverter, page: () => const UnitConverterView()),
     GetPage(name: AppRoutes.calculator, page: () => const CalculatorView()),
+    GetPage(name: AppRoutes.tipCalculator, page: () => const TipCalculatorView()),
+    GetPage(
+      name: AppRoutes.percentageCalculator,
+      page: () => const PercentageCalculatorView(),
+    ),
+    GetPage(name: AppRoutes.stopwatchTimer, page: () => const StopwatchTimerView()),
+    GetPage(name: AppRoutes.ageCalculator, page: () => const AgeCalculatorView()),
   ];
 }
 

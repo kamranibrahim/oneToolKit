@@ -1,6 +1,6 @@
 abstract final class AppConstants {
   static const String appName = 'OneToolkit';
-  static const String appTagline = 'One app. Hundreds of tools.';
+  static const String appTagline = 'One app. Dozens of offline tools.';
   static const String storageBox = 'one_toolkit';
 
   static const String keyThemeMode = 'theme_mode';

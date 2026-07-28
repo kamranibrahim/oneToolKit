@@ -32,6 +32,10 @@ abstract final class AppRoutes {
   static const String passwordGenerator = '/tools/password-generator';
   static const String unitConverter = '/tools/unit-converter';
   static const String calculator = '/tools/calculator';
+  static const String tipCalculator = '/tools/tip-calculator';
+  static const String percentageCalculator = '/tools/percentage-calculator';
+  static const String stopwatchTimer = '/tools/stopwatch-timer';
+  static const String ageCalculator = '/tools/age-calculator';
 
   // Images
   static const String imageCompress = '/tools/image-compress';
@@ -44,6 +48,7 @@ abstract final class AppRoutes {
   static const String colorPicker = '/tools/color-picker';
   static const String imageMetadata = '/tools/image-metadata';
   static const String bgRemove = '/tools/bg-remove';
+  static const String imageBase64 = '/tools/image-base64';
 
   // PDF
   static const String pdfMerge = '/tools/pdf-merge';
@@ -63,6 +68,7 @@ abstract final class AppRoutes {
   static const String zipTool = '/tools/zip';
   static const String checksum = '/tools/checksum';
   static const String duplicateFinder = '/tools/duplicate-finder';
+  static const String batchRename = '/tools/batch-rename';
 
   // AI
   static const String ocr = '/tools/ocr';

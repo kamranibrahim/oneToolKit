@@ -27,8 +27,8 @@ enum ToolCategory {
         ToolCategory.documents => 'Markdown, CSV, YAML',
         ToolCategory.qr => 'Generate & scan codes',
         ToolCategory.text => 'Count, convert, format',
-        ToolCategory.developer => 'JWT, UUID, passwords, calc',
-        ToolCategory.files => 'ZIP, checksum, duplicates',
+        ToolCategory.developer => 'Calc, passwords, timers',
+        ToolCategory.files => 'ZIP, rename, checksum',
         ToolCategory.ai => 'OCR, translate, summarize',
       };
 
