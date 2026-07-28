@@ -19,21 +19,21 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   static const _pages = [
     _PageData(
-      icon: Icons.lock_outline_rounded,
+      imageAsset: 'assets/onboarding/privacy.jpg',
       title: 'Private by default',
       body:
           'Your files stay on this device. No account required — and no ads watching what you do.',
       accent: AppColors.seed,
     ),
     _PageData(
-      icon: Icons.offline_bolt_outlined,
+      imageAsset: 'assets/onboarding/offline.jpg',
       title: 'Built for offline',
       body:
           'Merge PDFs, scan codes, compress images, and run everyday utilities without uploading to the cloud.',
       accent: AppColors.qr,
     ),
     _PageData(
-      icon: Icons.star_outline_rounded,
+      imageAsset: 'assets/onboarding/favorites.jpg',
       title: 'Pin what you use',
       body:
           'Favorite tools for quick access, and optionally add a OneToolkit widget to your home screen.',
@@ -87,21 +87,32 @@ class _OnboardingViewState extends State<OnboardingView> {
                 itemBuilder: (context, i) {
                   final page = _pages[i];
                   return Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 12, 28, 12),
+                    padding: const EdgeInsets.fromLTRB(24, 4, 24, 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Spacer(flex: 2),
-                        Container(
-                          width: 72,
-                          height: 72,
-                          decoration: BoxDecoration(
-                            color: page.accent.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(20),
+                        Expanded(
+                          flex: 5,
+                          child: Center(
+                            child: AspectRatio(
+                              aspectRatio: 4 / 3,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: page.accent.withValues(alpha: 0.06),
+                                  ),
+                                  child: Image.asset(
+                                    page.imageAsset,
+                                    fit: BoxFit.cover,
+                                    filterQuality: FilterQuality.high,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                          child: Icon(page.icon, size: 36, color: page.accent),
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 20),
                         Text(
                           AppConstants.appName,
                           style: theme.textTheme.labelLarge?.copyWith(
@@ -118,7 +129,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                             height: 1.15,
                           ),
                         ),
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 12),
                         Text(
                           page.body,
                           style: theme.textTheme.bodyLarge?.copyWith(
@@ -127,7 +138,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                             height: 1.45,
                           ),
                         ),
-                        const Spacer(flex: 3),
+                        const SizedBox(height: 8),
                       ],
                     ),
                   );
@@ -176,13 +187,13 @@ class _OnboardingViewState extends State<OnboardingView> {
 
 class _PageData {
   const _PageData({
-    required this.icon,
+    required this.imageAsset,
     required this.title,
     required this.body,
     required this.accent,
   });
 
-  final IconData icon;
+  final String imageAsset;
   final String title;
   final String body;
   final Color accent;
