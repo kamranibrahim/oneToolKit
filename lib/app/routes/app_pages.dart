@@ -22,6 +22,7 @@ import '../../modules/tools/documents/yaml_json_view.dart';
 import '../../modules/tools/files/duplicate_finder_view.dart';
 import '../../modules/tools/files/file_checksum_view.dart';
 import '../../modules/tools/files/zip_tool_view.dart';
+import '../../modules/tools/images/background_remove_view.dart';
 import '../../modules/tools/images/color_picker_view.dart';
 import '../../modules/tools/images/image_compress_view.dart';
 import '../../modules/tools/images/image_crop_view.dart';
@@ -109,6 +110,7 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.imageCrop, page: () => const ImageCropView()),
     GetPage(name: AppRoutes.colorPicker, page: () => const ColorPickerView()),
     GetPage(name: AppRoutes.imageMetadata, page: () => const ImageMetadataView()),
+    GetPage(name: AppRoutes.bgRemove, page: () => const BackgroundRemoveView()),
 
     // PDF
     GetPage(name: AppRoutes.pdfMerge, page: () => const PdfMergeView()),

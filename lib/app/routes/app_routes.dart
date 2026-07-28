@@ -37,6 +37,7 @@ abstract final class AppRoutes {
   static const String imageCrop = '/tools/image-crop';
   static const String colorPicker = '/tools/color-picker';
   static const String imageMetadata = '/tools/image-metadata';
+  static const String bgRemove = '/tools/bg-remove';
 
   // PDF
   static const String pdfMerge = '/tools/pdf-merge';

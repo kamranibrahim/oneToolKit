@@ -201,9 +201,10 @@ abstract final class ToolCatalog {
       description: 'Remove image backgrounds',
       category: ToolCategory.images,
       icon: Icons.layers_clear_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.bgRemove,
+      keywords: ['cutout', 'transparent', 'remove bg', 'subject'],
       isTrending: true,
+      isRecommended: true,
     ),
     const ToolModel(
       id: 'image_metadata',

@@ -576,6 +576,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.4.0"
+  native_cutout:
+    dependency: "direct main"
+    description:
+      name: native_cutout
+      sha256: "6bf714fd21dd3e9eb49f1b78e4f082c0d8fbc842f608adc43fc85f4d348aa0ce"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   objective_c:
     dependency: transitive
     description:

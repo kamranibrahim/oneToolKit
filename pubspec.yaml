@@ -63,6 +63,7 @@ dependencies:
   syncfusion_flutter_pdf: ^33.2.13
   home_widget: ^0.9.3
   google_mlkit_translation: ^0.14.0
+  native_cutout: ^0.3.0
 
 dev_dependencies:
   flutter_test:

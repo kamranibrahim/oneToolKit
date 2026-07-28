@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -65,12 +67,18 @@ class SettingsView extends GetView<SettingsController> {
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.widgets_outlined),
                   title: const Text('Home screen widget'),
-                  subtitle: const Text('Sync favorites to Android widget'),
+                  subtitle: Text(
+                    Platform.isIOS
+                        ? 'Sync favorites to iOS WidgetKit'
+                        : 'Sync favorites to Android widget',
+                  ),
                   onTap: () async {
                     await Get.find<WidgetSyncService>().syncFavorites();
                     Get.snackbar(
                       'Widget updated',
-                      'Add “OneToolkit Favorites” from your home screen widgets.',
+                      Platform.isIOS
+                          ? 'Long-press the Home Screen → Widgets → OneToolkit Favorites.'
+                          : 'Add “OneToolkit Favorites” from your home screen widgets.',
                       snackPosition: SnackPosition.BOTTOM,
                       margin: const EdgeInsets.all(16),
                     );

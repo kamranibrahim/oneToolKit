@@ -25,15 +25,14 @@ Privacy-first utility toolkit — hundreds of offline productivity tools in one 
   - **Files:** ZIP create/extract, File Checksum
   - **Developer:** JWT Decoder, UUID, Color Converter, Timestamp, HTTP Status, MIME Types
 
-## Phase 2 (in progress)
+## Phase 2 (shipped)
 
 - **PDF:** Split, Compress, Rotate, Protect, Unlock, Scan, Watermark, Extract, Delete, Organize
-- **Images:** HEIC, WebP, Crop, Color Picker, Metadata (EXIF)
+- **Images:** HEIC, WebP, Crop, Color Picker, Metadata, Background Removal
 - **Documents:** YAML ↔ JSON
 - **Files:** Duplicate Finder
 - **AI:** OCR, on-device Translate, offline Summarize
-- **Widgets:** Android favorites home-screen widget
-- Next: iOS WidgetKit · background removal · more polish
+- **Widgets:** Android + iOS (WidgetKit) favorites home-screen widgets
 
 ## Run
 
