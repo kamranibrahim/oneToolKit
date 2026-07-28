@@ -22,7 +22,8 @@ Privacy-first utility toolkit — dozens of offline productivity tools in one Fl
 
 - Password · Unit · Calculator · Tip · Percentage · Stopwatch/Timer · Age
 - Random Generator · Number Base · IP Calculator · Cron Explainer
-- Loan Calculator · Line Tools · ASCII Converter
+- Loan Calculator · BMI · Discount · Query String
+- Line Tools · ASCII · Morse · Roman · HTML Entities
 - Barcode Generate · Scan Code
 - Image ↔ Base64 · Batch Rename
 - HTML/XML/CSS/SQL Formatter · Notepad

@@ -17,6 +17,9 @@ abstract final class AppRoutes {
   static const String regexTester = '/tools/regex-tester';
   static const String lineTools = '/tools/line-tools';
   static const String asciiConverter = '/tools/ascii-converter';
+  static const String morseCode = '/tools/morse-code';
+  static const String romanNumeral = '/tools/roman-numeral';
+  static const String htmlEntities = '/tools/html-entities';
 
   // Documents
   static const String csvJson = '/tools/csv-json';
@@ -45,6 +48,8 @@ abstract final class AppRoutes {
   static const String ageCalculator = '/tools/age-calculator';
   static const String randomGenerator = '/tools/random-generator';
   static const String loanCalculator = '/tools/loan-calculator';
+  static const String bmiCalculator = '/tools/bmi-calculator';
+  static const String discountCalculator = '/tools/discount-calculator';
 
   // Images
   static const String imageCompress = '/tools/image-compress';
@@ -94,4 +99,5 @@ abstract final class AppRoutes {
   static const String numberBase = '/tools/number-base';
   static const String ipCalculator = '/tools/ip-calculator';
   static const String cronExplainer = '/tools/cron-explainer';
+  static const String queryString = '/tools/query-string';
 }

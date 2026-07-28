@@ -18,6 +18,7 @@ import '../../modules/tools/developer/ip_calculator_view.dart';
 import '../../modules/tools/developer/jwt_decoder_view.dart';
 import '../../modules/tools/developer/mime_types_view.dart';
 import '../../modules/tools/developer/number_base_view.dart';
+import '../../modules/tools/developer/query_string_view.dart';
 import '../../modules/tools/developer/timestamp_view.dart';
 import '../../modules/tools/developer/uuid_generator_view.dart';
 import '../../modules/tools/documents/css_formatter_view.dart';
@@ -60,7 +61,9 @@ import '../../modules/tools/qr/qr_generate_view.dart';
 import '../../modules/tools/qr/qr_scan_view.dart';
 import '../../modules/tools/qr/wifi_qr_view.dart';
 import '../../modules/tools/utilities/age_calculator_view.dart';
+import '../../modules/tools/utilities/bmi_calculator_view.dart';
 import '../../modules/tools/utilities/calculator_view.dart';
+import '../../modules/tools/utilities/discount_calculator_view.dart';
 import '../../modules/tools/utilities/loan_calculator_view.dart';
 import '../../modules/tools/utilities/password_generator_view.dart';
 import '../../modules/tools/utilities/percentage_calculator_view.dart';
@@ -73,11 +76,14 @@ import '../../modules/tools/text/base64_view.dart';
 import '../../modules/tools/text/case_converter_view.dart';
 import '../../modules/tools/text/diff_checker_view.dart';
 import '../../modules/tools/text/hash_generator_view.dart';
+import '../../modules/tools/text/html_entities_view.dart';
 import '../../modules/tools/text/json_formatter_view.dart';
 import '../../modules/tools/text/line_tools_view.dart';
 import '../../modules/tools/text/lorem_ipsum_view.dart';
 import '../../modules/tools/text/markdown_preview_view.dart';
+import '../../modules/tools/text/morse_code_view.dart';
 import '../../modules/tools/text/regex_tester_view.dart';
+import '../../modules/tools/text/roman_numeral_view.dart';
 import '../../modules/tools/text/url_encoder_view.dart';
 import '../../modules/tools/text/word_counter_view.dart';
 import 'app_routes.dart';
@@ -112,6 +118,9 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.regexTester, page: () => const RegexTesterView()),
     GetPage(name: AppRoutes.lineTools, page: () => const LineToolsView()),
     GetPage(name: AppRoutes.asciiConverter, page: () => const AsciiConverterView()),
+    GetPage(name: AppRoutes.morseCode, page: () => const MorseCodeView()),
+    GetPage(name: AppRoutes.romanNumeral, page: () => const RomanNumeralView()),
+    GetPage(name: AppRoutes.htmlEntities, page: () => const HtmlEntitiesView()),
 
     // Documents
     GetPage(name: AppRoutes.csvJson, page: () => const CsvJsonView()),
@@ -193,9 +202,15 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.ageCalculator, page: () => const AgeCalculatorView()),
     GetPage(name: AppRoutes.randomGenerator, page: () => const RandomGeneratorView()),
     GetPage(name: AppRoutes.loanCalculator, page: () => const LoanCalculatorView()),
+    GetPage(name: AppRoutes.bmiCalculator, page: () => const BmiCalculatorView()),
+    GetPage(
+      name: AppRoutes.discountCalculator,
+      page: () => const DiscountCalculatorView(),
+    ),
     GetPage(name: AppRoutes.numberBase, page: () => const NumberBaseConverterView()),
     GetPage(name: AppRoutes.ipCalculator, page: () => const IpCalculatorView()),
     GetPage(name: AppRoutes.cronExplainer, page: () => const CronExplainerView()),
+    GetPage(name: AppRoutes.queryString, page: () => const QueryStringView()),
   ];
 }
 
