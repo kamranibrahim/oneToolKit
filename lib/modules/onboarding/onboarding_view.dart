@@ -112,16 +112,30 @@ class _OnboardingViewState extends State<OnboardingView> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        Text(
-                          AppConstants.appName,
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.2,
-                          ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                'assets/branding/app_icon.png',
+                                width: 36,
+                                height: 36,
+                                filterQuality: FilterQuality.high,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              AppConstants.appName,
+                              style: theme.textTheme.labelLarge?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 10),
                         Text(
                           page.title,
                           style: theme.textTheme.headlineMedium?.copyWith(

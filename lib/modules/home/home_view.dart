@@ -34,14 +34,28 @@ class HomeView extends GetView<HomeController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      AppConstants.appName,
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontSize: 34,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.8,
-                        height: 1.1,
-                      ),
+                    Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.asset(
+                            'assets/branding/app_icon.png',
+                            width: 40,
+                            height: 40,
+                            filterQuality: FilterQuality.high,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          AppConstants.appName,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            fontSize: 34,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.8,
+                            height: 1.1,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 4),
                     const OfflineBadge(),
