@@ -61,6 +61,12 @@ No account required. Tools run locally on-device whenever possible. User files s
 ## Next (planned)
 
 1. Device smoke tests — Merge/Share, Scan→PDF, OCR, QR, widgets  
-2. Polish — onboarding, store listing, screenshots  
+2. ~~Polish — onboarding, store listing~~ **done**  
 3. ~~Deepen — PDF page previews + OCR editor~~ **done**  
 4. Optional later — cloud sync / desktop, always opt-in
+
+## Store listing (draft)
+
+**Subtitle:** 85+ offline PDF, image, QR & utility tools — private by default
+
+Copy the full App Store / Play text from **Settings → Store listing** in the app.

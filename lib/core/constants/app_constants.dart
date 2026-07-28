@@ -10,4 +10,5 @@ abstract final class AppConstants {
   static const String keyHistory = 'history';
   static const String keyRecentSearches = 'recent_searches';
   static const String keyNotes = 'notes';
+  static const String keyOnboardingDone = 'onboarding_done';
 }

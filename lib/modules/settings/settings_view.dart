@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../app/routes/app_routes.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/constants/store_copy.dart';
 import '../../data/catalog/tool_catalog.dart';
 import '../../data/services/favorites_service.dart';
 import '../../data/services/history_service.dart';
@@ -91,9 +94,19 @@ class SettingsView extends GetView<SettingsController> {
                 const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.auto_stories_outlined),
+                  title: const Text('Replay intro'),
+                  subtitle: const Text('Show the first-run tips again'),
+                  onTap: () => Get.toNamed(AppRoutes.onboarding),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.delete_outline_rounded),
                   title: const Text('Clear local data'),
-                  subtitle: const Text('Favorites, history, and recent tools'),
+                  subtitle: const Text(
+                    'Favorites, history, recent tools, and notepad',
+                  ),
                   onTap: () => _confirmClear(context),
                 ),
                 const Divider(height: 1),
@@ -101,12 +114,19 @@ class SettingsView extends GetView<SettingsController> {
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.privacy_tip_outlined),
                   title: const Text('Privacy'),
-                  subtitle: const Text('Everything runs locally when possible'),
+                  subtitle: const Text('What stays on your device'),
                   onTap: () => _showInfo(
                     'Privacy',
-                    'OneToolkit is privacy-first. Your files stay on your device. '
-                    'No account is required. Cloud features (if added later) will always be optional.',
+                    StoreCopy.privacySummary,
                   ),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.storefront_outlined),
+                  title: const Text('Store listing'),
+                  subtitle: const Text('Copy App Store / Play description'),
+                  onTap: () => _showStoreListing(context),
                 ),
                 const Divider(height: 1),
                 FutureBuilder<PackageInfo>(
@@ -123,9 +143,8 @@ class SettingsView extends GetView<SettingsController> {
                           Text('$available of $total tools available · v$label'),
                       onTap: () => _showInfo(
                         AppConstants.appName,
-                        '${AppConstants.appTagline}\n\n'
-                        'A privacy-first utility toolkit — PDF, images, QR, text, '
-                        'and developer tools in one free offline-first app.\n\n'
+                        '${StoreCopy.subtitle}\n\n'
+                        '${StoreCopy.promotionalText}\n\n'
                         'Version $label',
                       ),
                     );
@@ -152,12 +171,18 @@ class SettingsView extends GetView<SettingsController> {
       AlertDialog(
         title: const Text('Clear local data?'),
         content: const Text(
-          'This removes favorites, history, and recent tools from this device. '
-          'Your files are not deleted.',
+          'This removes favorites, history, recent tools, and notepad notes '
+          'from this device. Your files in Photos/Files are not deleted.',
         ),
         actions: [
-          TextButton(onPressed: () => Get.back(result: false), child: const Text('Cancel')),
-          TextButton(onPressed: () => Get.back(result: true), child: const Text('Clear')),
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            child: const Text('Clear'),
+          ),
         ],
       ),
     );
@@ -180,9 +205,45 @@ class SettingsView extends GetView<SettingsController> {
     Get.dialog(
       AlertDialog(
         title: Text(title),
-        content: Text(body),
+        content: SingleChildScrollView(child: Text(body)),
         actions: [
           TextButton(onPressed: Get.back, child: const Text('OK')),
+        ],
+      ),
+    );
+  }
+
+  void _showStoreListing(BuildContext context) {
+    final text = [
+      StoreCopy.name,
+      StoreCopy.subtitle,
+      '',
+      StoreCopy.promotionalText,
+      '',
+      StoreCopy.description.trim(),
+      '',
+      'Keywords: ${StoreCopy.keywords}',
+    ].join('\n');
+
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Store listing'),
+        content: SingleChildScrollView(child: SelectableText(text)),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: text));
+              Get.back();
+              Get.snackbar(
+                'Copied',
+                'Store listing copied to clipboard',
+                snackPosition: SnackPosition.BOTTOM,
+                margin: const EdgeInsets.all(16),
+              );
+            },
+            child: const Text('Copy all'),
+          ),
+          TextButton(onPressed: Get.back, child: const Text('Close')),
         ],
       ),
     );

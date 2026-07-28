@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../data/models/tool_model.dart';
 import '../../data/services/favorites_service.dart';
 import '../../data/services/history_service.dart';
+import '../../modules/onboarding/onboarding_view.dart';
 import '../../modules/categories/category_detail_view.dart';
 import '../../modules/search/search_view.dart';
 import '../../modules/shell/shell_binding.dart';
@@ -101,6 +102,7 @@ abstract final class AppPages {
       page: () => const ShellView(),
       binding: ShellBinding(),
     ),
+    GetPage(name: AppRoutes.onboarding, page: () => const OnboardingView()),
     GetPage(name: AppRoutes.search, page: () => const SearchView()),
     GetPage(
       name: AppRoutes.categoryDetail,

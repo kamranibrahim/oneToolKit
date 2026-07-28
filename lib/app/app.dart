@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../core/constants/app_constants.dart';
+import '../data/services/storage_service.dart';
 import '../modules/settings/settings_controller.dart';
 import 'bindings/initial_binding.dart';
 import 'routes/app_pages.dart';
@@ -15,6 +16,9 @@ class OneToolkitApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = Get.find<SettingsController>();
+    final storage = Get.find<StorageService>();
+    final seenOnboarding =
+        storage.read<bool>(AppConstants.keyOnboardingDone) == true;
 
     return Obx(
       () => GetMaterialApp(
@@ -24,7 +28,7 @@ class OneToolkitApp extends StatelessWidget {
         darkTheme: AppTheme.dark(),
         themeMode: settings.themeMode.value,
         initialBinding: InitialBinding(),
-        initialRoute: AppRoutes.shell,
+        initialRoute: seenOnboarding ? AppRoutes.shell : AppRoutes.onboarding,
         getPages: AppPages.pages,
         defaultTransition: Transition.cupertino,
         builder: (context, child) {
