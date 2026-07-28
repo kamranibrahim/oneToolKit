@@ -25,9 +25,12 @@ Privacy-first utility toolkit — hundreds of offline productivity tools in one 
   - **Files:** ZIP create/extract, File Checksum
   - **Developer:** JWT Decoder, UUID, Color Converter, Timestamp, HTTP Status, MIME Types
 
-## Phase 2 (next)
+## Phase 2 (in progress)
 
-OCR · Scanner · HEIC · WebP · PDF split/compress/protect · Duplicate finder · Widgets
+- **PDF:** Split, Compress
+- **Images:** HEIC Converter, WebP Converter
+- **Documents:** YAML ↔ JSON
+- Next: OCR · Scanner · Duplicate finder · Widgets
 
 ## Run
 

@@ -15,13 +15,17 @@ import '../../modules/tools/developer/mime_types_view.dart';
 import '../../modules/tools/developer/timestamp_view.dart';
 import '../../modules/tools/developer/uuid_generator_view.dart';
 import '../../modules/tools/documents/csv_json_view.dart';
+import '../../modules/tools/documents/yaml_json_view.dart';
 import '../../modules/tools/files/file_checksum_view.dart';
 import '../../modules/tools/files/zip_tool_view.dart';
 import '../../modules/tools/images/image_compress_view.dart';
+import '../../modules/tools/images/image_format_convert_view.dart';
 import '../../modules/tools/images/image_resize_view.dart';
 import '../../modules/tools/images/image_rotate_view.dart';
 import '../../modules/tools/images/images_to_pdf_view.dart';
+import '../../modules/tools/pdf/pdf_compress_view.dart';
 import '../../modules/tools/pdf/pdf_merge_view.dart';
+import '../../modules/tools/pdf/pdf_split_view.dart';
 import '../../modules/tools/pdf/pdf_to_images_view.dart';
 import '../../modules/tools/qr/contact_qr_view.dart';
 import '../../modules/tools/qr/email_qr_view.dart';
@@ -71,6 +75,7 @@ abstract final class AppPages {
 
     // Documents
     GetPage(name: AppRoutes.csvJson, page: () => const CsvJsonView()),
+    GetPage(name: AppRoutes.yamlJson, page: () => const YamlJsonView()),
 
     // QR
     GetPage(name: AppRoutes.qrGenerate, page: () => const QrGenerateView()),
@@ -84,10 +89,14 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.imageResize, page: () => const ImageResizeView()),
     GetPage(name: AppRoutes.imageRotate, page: () => const ImageRotateView()),
     GetPage(name: AppRoutes.imagesToPdf, page: () => const ImagesToPdfView()),
+    GetPage(name: AppRoutes.heicConvert, page: () => const HeicConvertView()),
+    GetPage(name: AppRoutes.webpConvert, page: () => const WebpConvertView()),
 
     // PDF
     GetPage(name: AppRoutes.pdfMerge, page: () => const PdfMergeView()),
     GetPage(name: AppRoutes.pdfToImages, page: () => const PdfToImagesView()),
+    GetPage(name: AppRoutes.pdfSplit, page: () => const PdfSplitView()),
+    GetPage(name: AppRoutes.pdfCompress, page: () => const PdfCompressView()),
 
     // Files
     GetPage(name: AppRoutes.zipTool, page: () => const ZipToolView()),

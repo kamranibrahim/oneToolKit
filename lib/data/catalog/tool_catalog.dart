@@ -24,9 +24,9 @@ abstract final class ToolCatalog {
       description: 'Split a PDF into separate files',
       category: ToolCategory.pdf,
       icon: Icons.call_split_rounded,
-      route: AppRoutes.comingSoon,
+      route: AppRoutes.pdfSplit,
       keywords: ['divide', 'pages'],
-      status: ToolStatus.comingSoon,
+      isRecommended: true,
     ),
     const ToolModel(
       id: 'pdf_compress',
@@ -34,9 +34,8 @@ abstract final class ToolCatalog {
       description: 'Reduce PDF file size',
       category: ToolCategory.pdf,
       icon: Icons.compress_rounded,
-      route: AppRoutes.comingSoon,
+      route: AppRoutes.pdfCompress,
       keywords: ['shrink', 'optimize'],
-      status: ToolStatus.comingSoon,
       isTrending: true,
     ),
     const ToolModel(
@@ -170,9 +169,8 @@ abstract final class ToolCatalog {
       description: 'Convert HEIC to JPG or PNG',
       category: ToolCategory.images,
       icon: Icons.phone_iphone_rounded,
-      route: AppRoutes.comingSoon,
+      route: AppRoutes.heicConvert,
       keywords: ['iphone', 'heif'],
-      status: ToolStatus.comingSoon,
       isTrending: true,
     ),
     const ToolModel(
@@ -181,8 +179,8 @@ abstract final class ToolCatalog {
       description: 'Convert to and from WebP',
       category: ToolCategory.images,
       icon: Icons.swap_horiz_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.webpConvert,
+      keywords: ['jpg', 'png', 'convert'],
     ),
     const ToolModel(
       id: 'bg_remove',
@@ -238,8 +236,8 @@ abstract final class ToolCatalog {
       description: 'Convert between YAML and JSON',
       category: ToolCategory.documents,
       icon: Icons.data_object_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.yamlJson,
+      keywords: ['yml', 'config'],
     ),
 
     // ── QR ───────────────────────────────────────────────

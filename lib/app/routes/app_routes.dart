@@ -18,6 +18,7 @@ abstract final class AppRoutes {
 
   // Documents
   static const String csvJson = '/tools/csv-json';
+  static const String yamlJson = '/tools/yaml-json';
 
   // QR
   static const String qrGenerate = '/tools/qr-generate';
@@ -31,10 +32,14 @@ abstract final class AppRoutes {
   static const String imageResize = '/tools/image-resize';
   static const String imageRotate = '/tools/image-rotate';
   static const String imagesToPdf = '/tools/images-to-pdf';
+  static const String heicConvert = '/tools/heic-convert';
+  static const String webpConvert = '/tools/webp-convert';
 
   // PDF
   static const String pdfMerge = '/tools/pdf-merge';
   static const String pdfToImages = '/tools/pdf-to-images';
+  static const String pdfSplit = '/tools/pdf-split';
+  static const String pdfCompress = '/tools/pdf-compress';
 
   // Files
   static const String zipTool = '/tools/zip';
