@@ -24,10 +24,10 @@ enum ToolCategory {
   String get subtitle => switch (this) {
         ToolCategory.pdf => 'Merge, split, compress & more',
         ToolCategory.images => 'Compress, convert, edit',
-        ToolCategory.documents => 'Markdown, notes, HTML, XML',
+        ToolCategory.documents => 'Notes, HTML, CSS, SQL, XML',
         ToolCategory.qr => 'Generate & scan codes',
-        ToolCategory.text => 'Count, convert, format',
-        ToolCategory.developer => 'Calc, passwords, timers',
+        ToolCategory.text => 'Count, convert, lines, ASCII',
+        ToolCategory.developer => 'Calc, cron, loans, timers',
         ToolCategory.files => 'ZIP, rename, checksum',
         ToolCategory.ai => 'OCR, translate, summarize',
       };

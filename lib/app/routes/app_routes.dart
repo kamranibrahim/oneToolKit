@@ -15,12 +15,16 @@ abstract final class AppRoutes {
   static const String diffChecker = '/tools/diff-checker';
   static const String markdownPreview = '/tools/markdown-preview';
   static const String regexTester = '/tools/regex-tester';
+  static const String lineTools = '/tools/line-tools';
+  static const String asciiConverter = '/tools/ascii-converter';
 
   // Documents
   static const String csvJson = '/tools/csv-json';
   static const String yamlJson = '/tools/yaml-json';
   static const String htmlFormatter = '/tools/html-formatter';
   static const String xmlFormatter = '/tools/xml-formatter';
+  static const String cssFormatter = '/tools/css-formatter';
+  static const String sqlFormatter = '/tools/sql-formatter';
   static const String notepad = '/tools/notepad';
 
   // QR
@@ -40,6 +44,7 @@ abstract final class AppRoutes {
   static const String stopwatchTimer = '/tools/stopwatch-timer';
   static const String ageCalculator = '/tools/age-calculator';
   static const String randomGenerator = '/tools/random-generator';
+  static const String loanCalculator = '/tools/loan-calculator';
 
   // Images
   static const String imageCompress = '/tools/image-compress';
@@ -88,4 +93,5 @@ abstract final class AppRoutes {
   static const String mimeTypes = '/tools/mime-types';
   static const String numberBase = '/tools/number-base';
   static const String ipCalculator = '/tools/ip-calculator';
+  static const String cronExplainer = '/tools/cron-explainer';
 }

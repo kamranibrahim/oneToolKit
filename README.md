@@ -21,10 +21,11 @@ Privacy-first utility toolkit — dozens of offline productivity tools in one Fl
 ## Phase 3 utilities (shipped)
 
 - Password · Unit · Calculator · Tip · Percentage · Stopwatch/Timer · Age
-- Random Generator · Number Base · IP Calculator
+- Random Generator · Number Base · IP Calculator · Cron Explainer
+- Loan Calculator · Line Tools · ASCII Converter
 - Barcode Generate · Scan Code
 - Image ↔ Base64 · Batch Rename
-- HTML/XML Formatter · Notepad
+- HTML/XML/CSS/SQL Formatter · Notepad
 - Home-screen widget deep links · Settings clear-data
 
 ## Run

@@ -12,6 +12,7 @@ import '../../modules/tools/ai/ocr_view.dart';
 import '../../modules/tools/ai/summarize_view.dart';
 import '../../modules/tools/ai/translate_view.dart';
 import '../../modules/tools/developer/color_converter_view.dart';
+import '../../modules/tools/developer/cron_explainer_view.dart';
 import '../../modules/tools/developer/http_status_view.dart';
 import '../../modules/tools/developer/ip_calculator_view.dart';
 import '../../modules/tools/developer/jwt_decoder_view.dart';
@@ -19,9 +20,11 @@ import '../../modules/tools/developer/mime_types_view.dart';
 import '../../modules/tools/developer/number_base_view.dart';
 import '../../modules/tools/developer/timestamp_view.dart';
 import '../../modules/tools/developer/uuid_generator_view.dart';
+import '../../modules/tools/documents/css_formatter_view.dart';
 import '../../modules/tools/documents/csv_json_view.dart';
 import '../../modules/tools/documents/html_formatter_view.dart';
 import '../../modules/tools/documents/notepad_view.dart';
+import '../../modules/tools/documents/sql_formatter_view.dart';
 import '../../modules/tools/documents/xml_formatter_view.dart';
 import '../../modules/tools/documents/yaml_json_view.dart';
 import '../../modules/tools/files/batch_rename_view.dart';
@@ -58,17 +61,20 @@ import '../../modules/tools/qr/qr_scan_view.dart';
 import '../../modules/tools/qr/wifi_qr_view.dart';
 import '../../modules/tools/utilities/age_calculator_view.dart';
 import '../../modules/tools/utilities/calculator_view.dart';
+import '../../modules/tools/utilities/loan_calculator_view.dart';
 import '../../modules/tools/utilities/password_generator_view.dart';
 import '../../modules/tools/utilities/percentage_calculator_view.dart';
 import '../../modules/tools/utilities/random_generator_view.dart';
 import '../../modules/tools/utilities/stopwatch_timer_view.dart';
 import '../../modules/tools/utilities/tip_calculator_view.dart';
 import '../../modules/tools/utilities/unit_converter_view.dart';
+import '../../modules/tools/text/ascii_converter_view.dart';
 import '../../modules/tools/text/base64_view.dart';
 import '../../modules/tools/text/case_converter_view.dart';
 import '../../modules/tools/text/diff_checker_view.dart';
 import '../../modules/tools/text/hash_generator_view.dart';
 import '../../modules/tools/text/json_formatter_view.dart';
+import '../../modules/tools/text/line_tools_view.dart';
 import '../../modules/tools/text/lorem_ipsum_view.dart';
 import '../../modules/tools/text/markdown_preview_view.dart';
 import '../../modules/tools/text/regex_tester_view.dart';
@@ -104,12 +110,16 @@ abstract final class AppPages {
       page: () => const MarkdownPreviewView(),
     ),
     GetPage(name: AppRoutes.regexTester, page: () => const RegexTesterView()),
+    GetPage(name: AppRoutes.lineTools, page: () => const LineToolsView()),
+    GetPage(name: AppRoutes.asciiConverter, page: () => const AsciiConverterView()),
 
     // Documents
     GetPage(name: AppRoutes.csvJson, page: () => const CsvJsonView()),
     GetPage(name: AppRoutes.yamlJson, page: () => const YamlJsonView()),
     GetPage(name: AppRoutes.htmlFormatter, page: () => const HtmlFormatterView()),
     GetPage(name: AppRoutes.xmlFormatter, page: () => const XmlFormatterView()),
+    GetPage(name: AppRoutes.cssFormatter, page: () => const CssFormatterView()),
+    GetPage(name: AppRoutes.sqlFormatter, page: () => const SqlFormatterView()),
     GetPage(name: AppRoutes.notepad, page: () => const NotepadView()),
 
     // QR
@@ -182,8 +192,10 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.stopwatchTimer, page: () => const StopwatchTimerView()),
     GetPage(name: AppRoutes.ageCalculator, page: () => const AgeCalculatorView()),
     GetPage(name: AppRoutes.randomGenerator, page: () => const RandomGeneratorView()),
+    GetPage(name: AppRoutes.loanCalculator, page: () => const LoanCalculatorView()),
     GetPage(name: AppRoutes.numberBase, page: () => const NumberBaseConverterView()),
     GetPage(name: AppRoutes.ipCalculator, page: () => const IpCalculatorView()),
+    GetPage(name: AppRoutes.cronExplainer, page: () => const CronExplainerView()),
   ];
 }
 
