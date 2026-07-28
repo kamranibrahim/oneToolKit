@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../data/catalog/tool_catalog.dart';
+import '../../data/services/widget_sync_service.dart';
 import 'settings_controller.dart';
 
 class SettingsView extends GetView<SettingsController> {
@@ -62,6 +63,22 @@ class SettingsView extends GetView<SettingsController> {
               children: [
                 ListTile(
                   contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.widgets_outlined),
+                  title: const Text('Home screen widget'),
+                  subtitle: const Text('Sync favorites to Android widget'),
+                  onTap: () async {
+                    await Get.find<WidgetSyncService>().syncFavorites();
+                    Get.snackbar(
+                      'Widget updated',
+                      'Add “OneToolkit Favorites” from your home screen widgets.',
+                      snackPosition: SnackPosition.BOTTOM,
+                      margin: const EdgeInsets.all(16),
+                    );
+                  },
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.privacy_tip_outlined),
                   title: const Text('Privacy'),
                   subtitle: const Text('Everything runs locally when possible'),
@@ -82,7 +99,7 @@ class SettingsView extends GetView<SettingsController> {
                     '${AppConstants.appTagline}\n\n'
                     'A privacy-first utility toolkit — PDF, images, QR, text, '
                     'and developer tools in one free offline-first app.\n\n'
-                    'Phase 1 · July 2026',
+                    'Phase 2 · July 2026',
                   ),
                 ),
               ],

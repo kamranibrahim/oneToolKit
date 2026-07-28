@@ -27,12 +27,13 @@ Privacy-first utility toolkit — hundreds of offline productivity tools in one 
 
 ## Phase 2 (in progress)
 
-- **PDF:** Split, Compress, Rotate, Protect, Unlock, Scan to PDF
+- **PDF:** Split, Compress, Rotate, Protect, Unlock, Scan, Watermark, Extract, Delete, Organize
 - **Images:** HEIC, WebP, Crop, Color Picker, Metadata (EXIF)
 - **Documents:** YAML ↔ JSON
 - **Files:** Duplicate Finder
-- **AI:** On-device OCR (ML Kit)
-- Next: Watermark · Extract/Delete pages · Widgets · Translate/Summarize
+- **AI:** OCR, on-device Translate, offline Summarize
+- **Widgets:** Android favorites home-screen widget
+- Next: iOS WidgetKit · background removal · more polish
 
 ## Run
 

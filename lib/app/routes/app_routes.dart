@@ -47,6 +47,10 @@ abstract final class AppRoutes {
   static const String pdfUnlock = '/tools/pdf-unlock';
   static const String pdfRotate = '/tools/pdf-rotate';
   static const String docScanner = '/tools/doc-scanner';
+  static const String pdfWatermark = '/tools/pdf-watermark';
+  static const String pdfExtract = '/tools/pdf-extract';
+  static const String pdfDeletePages = '/tools/pdf-delete-pages';
+  static const String pdfOrganize = '/tools/pdf-organize';
 
   // Files
   static const String zipTool = '/tools/zip';
@@ -55,6 +59,8 @@ abstract final class AppRoutes {
 
   // AI
   static const String ocr = '/tools/ocr';
+  static const String translate = '/tools/translate';
+  static const String summarize = '/tools/summarize';
 
   // Developer
   static const String jwtDecoder = '/tools/jwt-decoder';

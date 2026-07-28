@@ -4,6 +4,7 @@ import '../../core/constants/app_constants.dart';
 import '../catalog/tool_catalog.dart';
 import '../models/tool_model.dart';
 import 'storage_service.dart';
+import 'widget_sync_service.dart';
 
 class FavoritesService extends GetxService {
   FavoritesService(this._storage);
@@ -64,5 +65,8 @@ class FavoritesService extends GetxService {
   Future<void> _persist() async {
     await _storage.writeStringList(AppConstants.keyFavorites, favorites.toList());
     await _storage.writeStringList(AppConstants.keyPinned, pinned.toList());
+    if (Get.isRegistered<WidgetSyncService>()) {
+      await Get.find<WidgetSyncService>().syncFavorites();
+    }
   }
 }

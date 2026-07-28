@@ -86,8 +86,8 @@ abstract final class ToolCatalog {
       description: 'Add text or image watermark',
       category: ToolCategory.pdf,
       icon: Icons.branding_watermark_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.pdfWatermark,
+      keywords: ['stamp', 'overlay', 'confidential'],
     ),
     const ToolModel(
       id: 'pdf_password',
@@ -114,8 +114,8 @@ abstract final class ToolCatalog {
       description: 'Extract selected pages',
       category: ToolCategory.pdf,
       icon: Icons.content_cut_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.pdfExtract,
+      keywords: ['keep', 'select', 'pages'],
     ),
     const ToolModel(
       id: 'pdf_delete_pages',
@@ -123,8 +123,8 @@ abstract final class ToolCatalog {
       description: 'Remove pages from a PDF',
       category: ToolCategory.pdf,
       icon: Icons.delete_outline_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.pdfDeletePages,
+      keywords: ['remove', 'trim', 'pages'],
     ),
     const ToolModel(
       id: 'pdf_organize',
@@ -132,8 +132,8 @@ abstract final class ToolCatalog {
       description: 'Reorder and manage pages',
       category: ToolCategory.pdf,
       icon: Icons.reorder_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.pdfOrganize,
+      keywords: ['reorder', 'arrange', 'pages'],
     ),
 
     // ── Images ───────────────────────────────────────────
@@ -484,11 +484,12 @@ abstract final class ToolCatalog {
     const ToolModel(
       id: 'ai_summarize',
       name: 'Summarize',
-      description: 'AI text summarization',
+      description: 'Offline extractive text summary',
       category: ToolCategory.ai,
       icon: Icons.summarize_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.summarize,
+      keywords: ['summary', 'tl;dr', 'condense'],
+      isTrending: true,
     ),
     const ToolModel(
       id: 'ai_ocr',
@@ -504,11 +505,12 @@ abstract final class ToolCatalog {
     const ToolModel(
       id: 'ai_translate',
       name: 'Translate',
-      description: 'AI-powered translation',
+      description: 'On-device translation',
       category: ToolCategory.ai,
       icon: Icons.translate_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.translate,
+      keywords: ['language', 'ml kit', 'offline'],
+      isRecommended: true,
     ),
   ];
 

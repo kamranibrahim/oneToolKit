@@ -9,6 +9,8 @@ import '../../modules/shell/shell_binding.dart';
 import '../../modules/shell/shell_view.dart';
 import '../../modules/tools/coming_soon_view.dart';
 import '../../modules/tools/ai/ocr_view.dart';
+import '../../modules/tools/ai/summarize_view.dart';
+import '../../modules/tools/ai/translate_view.dart';
 import '../../modules/tools/developer/color_converter_view.dart';
 import '../../modules/tools/developer/http_status_view.dart';
 import '../../modules/tools/developer/jwt_decoder_view.dart';
@@ -29,12 +31,16 @@ import '../../modules/tools/images/image_resize_view.dart';
 import '../../modules/tools/images/image_rotate_view.dart';
 import '../../modules/tools/images/images_to_pdf_view.dart';
 import '../../modules/tools/pdf/pdf_compress_view.dart';
+import '../../modules/tools/pdf/pdf_delete_pages_view.dart';
+import '../../modules/tools/pdf/pdf_extract_view.dart';
 import '../../modules/tools/pdf/pdf_merge_view.dart';
+import '../../modules/tools/pdf/pdf_organize_view.dart';
 import '../../modules/tools/pdf/pdf_protect_view.dart';
 import '../../modules/tools/pdf/pdf_rotate_view.dart';
 import '../../modules/tools/pdf/pdf_split_view.dart';
 import '../../modules/tools/pdf/pdf_to_images_view.dart';
 import '../../modules/tools/pdf/pdf_unlock_view.dart';
+import '../../modules/tools/pdf/pdf_watermark_view.dart';
 import '../../modules/tools/scanner/document_scanner_view.dart';
 import '../../modules/tools/qr/contact_qr_view.dart';
 import '../../modules/tools/qr/email_qr_view.dart';
@@ -113,6 +119,10 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.pdfUnlock, page: () => const PdfUnlockView()),
     GetPage(name: AppRoutes.pdfRotate, page: () => const PdfRotateView()),
     GetPage(name: AppRoutes.docScanner, page: () => const DocumentScannerView()),
+    GetPage(name: AppRoutes.pdfWatermark, page: () => const PdfWatermarkView()),
+    GetPage(name: AppRoutes.pdfExtract, page: () => const PdfExtractView()),
+    GetPage(name: AppRoutes.pdfDeletePages, page: () => const PdfDeletePagesView()),
+    GetPage(name: AppRoutes.pdfOrganize, page: () => const PdfOrganizeView()),
 
     // Files
     GetPage(name: AppRoutes.zipTool, page: () => const ZipToolView()),
@@ -121,6 +131,8 @@ abstract final class AppPages {
 
     // AI
     GetPage(name: AppRoutes.ocr, page: () => const OcrView()),
+    GetPage(name: AppRoutes.translate, page: () => const TranslateView()),
+    GetPage(name: AppRoutes.summarize, page: () => const SummarizeView()),
 
     // Developer
     GetPage(name: AppRoutes.jwtDecoder, page: () => const JwtDecoderView()),

@@ -61,6 +61,8 @@ dependencies:
   image_cropper: ^12.2.1
   cunning_document_scanner: ^2.8.0
   syncfusion_flutter_pdf: ^33.2.13
+  home_widget: ^0.9.3
+  google_mlkit_translation: ^0.14.0
 
 dev_dependencies:
   flutter_test:
