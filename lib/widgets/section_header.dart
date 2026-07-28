@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../app/theme/app_colors.dart';
-
 class SectionHeader extends StatelessWidget {
   const SectionHeader({
     super.key,
@@ -18,16 +16,16 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, AppSpace.md, 0, AppSpace.sm),
+      padding: const EdgeInsets.fromLTRB(0, 20, 0, 8),
       child: Row(
         children: [
           Expanded(
             child: Text(
               title,
-              style: theme.textTheme.titleMedium?.copyWith(
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontSize: 20,
                 fontWeight: FontWeight.w700,
-                letterSpacing: -0.2,
-                color: theme.colorScheme.onSurface,
+                letterSpacing: -0.3,
               ),
             ),
           ),
@@ -35,11 +33,15 @@ class SectionHeader extends StatelessWidget {
             TextButton(
               onPressed: onAction,
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                minimumSize: const Size(0, 36),
+                foregroundColor: theme.colorScheme.primary,
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                minimumSize: const Size(0, 32),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              child: Text(actionLabel!),
+              child: Text(
+                actionLabel!,
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
             ),
         ],
       ),

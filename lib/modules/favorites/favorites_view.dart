@@ -11,6 +11,8 @@ class FavoritesView extends GetView<FavoritesController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Favorites')),
       body: Obx(() {
@@ -19,30 +21,44 @@ class FavoritesView extends GetView<FavoritesController> {
         if (tools.isEmpty) {
           return const EmptyState(
             icon: Icons.star_outline_rounded,
-            title: 'No favorites yet',
-            message:
-                'Star tools you use often. They show up here and on Home for one-tap access.',
+            title: 'No Favorites',
+            message: 'Star tools you use often for quick access.',
           );
         }
-        return ReorderableListView.builder(
+        return ListView(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
-          itemCount: tools.length,
-          onReorder: controller.reorder,
-          proxyDecorator: (child, index, animation) {
-            return Material(
-              elevation: 2,
+          children: [
+            Material(
+              color: theme.cardTheme.color,
               borderRadius: BorderRadius.circular(AppSpace.radius),
-              child: child,
-            );
-          },
-          itemBuilder: (context, index) {
-            final tool = tools[index];
-            return Padding(
-              key: ValueKey(tool.id),
-              padding: const EdgeInsets.only(bottom: 8),
-              child: ToolCard(tool: tool),
-            );
-          },
+              clipBehavior: Clip.antiAlias,
+              child: ReorderableListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: tools.length,
+                onReorder: controller.reorder,
+                buildDefaultDragHandles: true,
+                proxyDecorator: (child, index, animation) {
+                  return Material(
+                    elevation: 2,
+                    color: theme.cardTheme.color,
+                    child: child,
+                  );
+                },
+                itemBuilder: (context, index) {
+                  final tool = tools[index];
+                  return Column(
+                    key: ValueKey(tool.id),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (index > 0) const Divider(height: 0.5, indent: 58),
+                      ToolCard(tool: tool, compact: true),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
         );
       }),
     );

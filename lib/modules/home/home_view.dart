@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,31 +24,29 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            AppConstants.appName,
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: -0.5,
-                              color: theme.colorScheme.onSurface,
-                            ),
-                          ),
-                        ),
-                        const OfflineBadge(),
-                      ],
+                    Text(
+                      AppConstants.appName,
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontSize: 34,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.8,
+                        height: 1.1,
+                      ),
                     ),
-                    const SizedBox(height: AppSpace.md),
-                    const _SearchField(),
+                    const SizedBox(height: 4),
+                    const OfflineBadge(),
+                    const SizedBox(height: 16),
+                    const _IosSearchField(),
                   ],
                 ),
               ),
@@ -62,128 +61,144 @@ class HomeView extends GetView<HomeController> {
               final recent = controller.recent;
               final actions = controller.recentActions;
 
-              return ContainedSliverList(
-                children: [
-                  if (favs.isNotEmpty) ...[
-                    SectionHeader(
-                      title: 'Favorites',
-                      actionLabel: 'See all',
-                      onAction: () => Get.find<ShellController>().changeTab(2),
-                    ),
-                    SizedBox(
-                      height: 56,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: favs.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(width: 10),
-                        itemBuilder: (context, i) => ToolChip(tool: favs[i]),
+              return SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+                sliver: ContainedSliverList(
+                  children: [
+                    if (favs.isNotEmpty) ...[
+                      SectionHeader(
+                        title: 'Favorites',
+                        actionLabel: 'See All',
+                        onAction: () =>
+                            Get.find<ShellController>().changeTab(2),
                       ),
-                    ),
-                    const SizedBox(height: AppSpace.sm),
-                  ],
-                  if (recent.isNotEmpty) ...[
-                    const SectionHeader(title: 'Recent'),
-                    SizedBox(
-                      height: 56,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: recent.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(width: 10),
-                        itemBuilder: (context, i) => ToolChip(tool: recent[i]),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpace.sm),
-                  ],
-                  SectionHeader(
-                    title: 'Tools',
-                    actionLabel: 'Browse',
-                    onAction: () => Get.find<ShellController>().changeTab(1),
-                  ),
-                  _CategoryGrid(categories: controller.categories),
-                  const SizedBox(height: AppSpace.sm),
-                  const SectionHeader(title: 'Popular'),
-                  SizedBox(
-                    height: 148,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: controller.popular.length,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(width: 12),
-                      itemBuilder: (context, i) =>
-                          PopularToolTile(tool: controller.popular[i]),
-                    ),
-                  ),
-                  if (actions.isNotEmpty) ...[
-                    const SizedBox(height: AppSpace.sm),
-                    const SectionHeader(title: 'Recent activity'),
-                    ...actions.map((item) {
-                      final tool = ToolCatalog.byId(item.toolId);
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Material(
-                          color: theme.cardTheme.color,
-                          borderRadius: BorderRadius.circular(AppSpace.radius),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(AppSpace.radius),
-                            onTap: tool == null ? null : () => openTool(tool),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(AppSpace.radius),
-                                border: Border.all(
-                                  color: theme.dividerColor.withValues(alpha: 0.7),
-                                ),
-                              ),
-                              padding: const EdgeInsets.all(14),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    tool?.icon ?? Icons.history_rounded,
-                                    color: tool?.category.accent ??
-                                        theme.colorScheme.primary,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item.toolName,
-                                          style: theme.textTheme.titleSmall
-                                              ?.copyWith(
-                                            fontWeight: FontWeight.w700,
-                                            color: theme.colorScheme.onSurface,
-                                          ),
-                                        ),
-                                        Text(
-                                          item.detail == null
-                                              ? item.action
-                                              : '${item.action} · ${item.detail}',
-                                          style: theme.textTheme.bodySmall,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.chevron_right_rounded,
-                                    color: theme.iconTheme.color
-                                        ?.withValues(alpha: 0.35),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                      SizedBox(
+                        height: 48,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: favs.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 8),
+                          itemBuilder: (context, i) => ToolChip(tool: favs[i]),
                         ),
-                      );
-                    }),
+                      ),
+                    ],
+                    if (recent.isNotEmpty) ...[
+                      const SectionHeader(title: 'Recents'),
+                      SizedBox(
+                        height: 48,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: recent.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 8),
+                          itemBuilder: (context, i) =>
+                              ToolChip(tool: recent[i]),
+                        ),
+                      ),
+                    ],
+                    SectionHeader(
+                      title: 'Browse',
+                      actionLabel: 'See All',
+                      onAction: () => Get.find<ShellController>().changeTab(1),
+                    ),
+                    _CategoryGrid(categories: controller.categories),
+                    const SectionHeader(title: 'Popular'),
+                    SizedBox(
+                      height: 140,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: controller.popular.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: 10),
+                        itemBuilder: (context, i) =>
+                            PopularToolTile(tool: controller.popular[i]),
+                      ),
+                    ),
+                    if (actions.isNotEmpty) ...[
+                      const SectionHeader(title: 'Recent Activity'),
+                      Material(
+                        color: theme.cardTheme.color,
+                        borderRadius: BorderRadius.circular(AppSpace.radius),
+                        child: Column(
+                          children: [
+                            for (var i = 0; i < actions.length; i++) ...[
+                              if (i > 0)
+                                Divider(
+                                  height: 0.5,
+                                  indent: 58,
+                                  color: theme.dividerColor,
+                                ),
+                              Builder(
+                                builder: (context) {
+                                  final item = actions[i];
+                                  final tool = ToolCatalog.byId(item.toolId);
+                                  return InkWell(
+                                    onTap:
+                                        tool == null ? null : () => openTool(tool),
+                                    borderRadius: BorderRadius.vertical(
+                                      top: i == 0
+                                          ? const Radius.circular(AppSpace.radius)
+                                          : Radius.zero,
+                                      bottom: i == actions.length - 1
+                                          ? const Radius.circular(AppSpace.radius)
+                                          : Radius.zero,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 12,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            tool?.icon ?? Icons.history_rounded,
+                                            color: tool?.category.accent ??
+                                                theme.colorScheme.primary,
+                                            size: 22,
+                                          ),
+                                          const SizedBox(width: 14),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  item.toolName,
+                                                  style: theme
+                                                      .textTheme.titleSmall,
+                                                ),
+                                                Text(
+                                                  item.detail == null
+                                                      ? item.action
+                                                      : '${item.action} · ${item.detail}',
+                                                  style:
+                                                      theme.textTheme.bodySmall,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.chevron_right_rounded,
+                                            color: theme
+                                                .textTheme.bodySmall?.color,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
-                  const SizedBox(height: AppSpace.lg),
-                ],
+                ),
               );
             }),
           ],
@@ -193,7 +208,6 @@ class HomeView extends GetView<HomeController> {
   }
 }
 
-/// Pads list children like a Files content column.
 class ContainedSliverList extends StatelessWidget {
   const ContainedSliverList({super.key, required this.children});
 
@@ -201,48 +215,30 @@ class ContainedSliverList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
-      sliver: SliverList(delegate: SliverChildListDelegate(children)),
-    );
+    return SliverList(delegate: SliverChildListDelegate(children));
   }
 }
 
-class _SearchField extends StatelessWidget {
-  const _SearchField();
+class _IosSearchField extends StatelessWidget {
+  const _IosSearchField();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      color: theme.cardTheme.color,
-      borderRadius: BorderRadius.circular(AppSpace.radiusLg),
-      child: InkWell(
-        onTap: () => Get.toNamed(AppRoutes.search),
-        borderRadius: BorderRadius.circular(AppSpace.radiusLg),
-        child: Ink(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSpace.radiusLg),
-            border: Border.all(color: theme.dividerColor.withValues(alpha: 0.8)),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-          child: Row(
-            children: [
-              Icon(
-                Icons.search_rounded,
-                size: 22,
-                color: theme.textTheme.bodySmall?.color,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  'Search everything',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.textTheme.bodySmall?.color,
-                  ),
-                ),
-              ),
-            ],
+    final fill = theme.brightness == Brightness.dark
+        ? AppColors.fillDark
+        : AppColors.fillLight;
+
+    return GestureDetector(
+      onTap: () => Get.toNamed(AppRoutes.search),
+      child: AbsorbPointer(
+        child: CupertinoSearchTextField(
+          placeholder: 'Search',
+          backgroundColor: fill,
+          borderRadius: BorderRadius.circular(12),
+          style: theme.textTheme.bodyLarge,
+          placeholderStyle: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.textTheme.bodySmall?.color,
           ),
         ),
       ),
@@ -263,11 +259,12 @@ class _CategoryGrid extends StatelessWidget {
       itemCount: categories.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 1.45,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        childAspectRatio: 1.55,
       ),
-      itemBuilder: (context, index) => _CategoryTile(category: categories[index]),
+      itemBuilder: (context, index) =>
+          _CategoryTile(category: categories[index]),
     );
   }
 }
@@ -289,30 +286,18 @@ class _CategoryTile extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(AppSpace.radius),
         onTap: () => Get.toNamed(AppRoutes.categoryDetail, arguments: category),
-        child: Ink(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSpace.radius),
-            border: Border.all(color: theme.dividerColor.withValues(alpha: 0.7)),
-          ),
+        child: Padding(
           padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: category.accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(category.icon, color: category.accent, size: 22),
-              ),
+              Icon(category.icon, color: category.accent, size: 28),
               const Spacer(),
               Text(
                 category.label,
                 style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
                 ),
               ),
               const SizedBox(height: 2),

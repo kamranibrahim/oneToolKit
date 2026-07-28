@@ -25,18 +25,10 @@ class EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(AppSpace.radiusLg),
-              ),
-              child: Icon(
-                icon,
-                size: 32,
-                color: theme.colorScheme.primary.withValues(alpha: 0.85),
-              ),
+            Icon(
+              icon,
+              size: 48,
+              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.55),
             ),
             const SizedBox(height: AppSpace.md),
             Text(
@@ -44,13 +36,12 @@ class EmptyState extends StatelessWidget {
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
-                color: theme.colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpace.sm),
             ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 280),
+              constraints: const BoxConstraints(maxWidth: 260),
               child: Text(
                 message,
                 style: theme.textTheme.bodyMedium,
@@ -68,31 +59,20 @@ class EmptyState extends StatelessWidget {
   }
 }
 
-/// Subtle privacy cue — Apple Files / privacy-first.
 class OfflineBadge extends StatelessWidget {
-  const OfflineBadge({super.key, this.label = 'Processed on your device'});
+  const OfflineBadge({super.key, this.label = 'On your device'});
 
   final String label;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          Icons.lock_outline_rounded,
-          size: 14,
-          color: theme.textTheme.bodySmall?.color,
-        ),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: theme.textTheme.labelSmall?.copyWith(
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
+    return Text(
+      label,
+      style: theme.textTheme.labelMedium?.copyWith(
+        color: theme.textTheme.bodySmall?.color,
+        fontWeight: FontWeight.w500,
+      ),
     );
   }
 }

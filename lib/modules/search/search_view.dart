@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,39 +55,26 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final fill = theme.brightness == Brightness.dark
+        ? AppColors.fillDark
+        : AppColors.fillLight;
 
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: TextField(
-          controller: _controller,
-          focusNode: _focus,
-          decoration: const InputDecoration(
-            hintText: 'Search everything',
-            border: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            filled: false,
+        title: Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: CupertinoSearchTextField(
+            controller: _controller,
+            focusNode: _focus,
+            placeholder: 'Search',
+            backgroundColor: fill,
+            borderRadius: BorderRadius.circular(12),
+            style: theme.textTheme.bodyLarge,
+            onChanged: (v) => _query.value = v,
+            onSubmitted: (v) => _history.addSearch(v),
           ),
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: theme.colorScheme.onSurface,
-          ),
-          textInputAction: TextInputAction.search,
-          onChanged: (v) => _query.value = v,
-          onSubmitted: (v) => _history.addSearch(v),
         ),
-        actions: [
-          Obx(() {
-            if (_query.value.isEmpty) return const SizedBox.shrink();
-            return IconButton(
-              onPressed: () {
-                _controller.clear();
-                _query.value = '';
-              },
-              icon: const Icon(Icons.close_rounded),
-            );
-          }),
-        ],
       ),
       body: Obx(() {
         final q = _query.value.trim();
@@ -97,11 +85,11 @@ class _SearchViewState extends State<SearchView> {
               Text(
                 'Suggestions',
                 style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
+                  color: theme.textTheme.bodySmall?.color,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -109,55 +97,76 @@ class _SearchViewState extends State<SearchView> {
                     .map(
                       (s) => ActionChip(
                         label: Text(s),
-                        avatar: const Icon(Icons.north_west_rounded, size: 14),
                         onPressed: () => _apply(s),
+                        side: BorderSide.none,
                       ),
                     )
                     .toList(),
               ),
-              const SizedBox(height: AppSpace.lg),
               if (_history.recentSearches.isNotEmpty) ...[
+                const SizedBox(height: 24),
                 Row(
                   children: [
                     Text(
-                      'Recent',
+                      'Recents',
                       style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurface,
+                        color: theme.textTheme.bodySmall?.color,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const Spacer(),
-                    TextButton(
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
                       onPressed: _history.clearRecentSearches,
                       child: const Text('Clear'),
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
-                ..._history.recentSearches.map(
-                  (s) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.history_rounded),
-                    title: Text(s),
-                    onTap: () => _apply(s),
+                Material(
+                  color: theme.cardTheme.color,
+                  borderRadius: BorderRadius.circular(AppSpace.radius),
+                  child: Column(
+                    children: [
+                      for (var i = 0; i < _history.recentSearches.length; i++) ...[
+                        if (i > 0) const Divider(height: 0.5, indent: 52),
+                        ListTile(
+                          leading: Icon(
+                            Icons.history_rounded,
+                            color: theme.textTheme.bodySmall?.color,
+                          ),
+                          title: Text(_history.recentSearches[i]),
+                          trailing: Icon(
+                            Icons.north_west_rounded,
+                            size: 18,
+                            color: theme.textTheme.bodySmall?.color,
+                          ),
+                          onTap: () => _apply(_history.recentSearches[i]),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
-                const SizedBox(height: AppSpace.md),
               ],
+              const SizedBox(height: 24),
               Text(
                 'Popular',
                 style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
+                  color: theme.textTheme.bodySmall?.color,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 10),
-              ...ToolCatalog.recommended.take(5).map(
-                    (t) => Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: ToolCard(tool: t, compact: true),
-                    ),
-                  ),
+              Material(
+                color: theme.cardTheme.color,
+                borderRadius: BorderRadius.circular(AppSpace.radius),
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  children: [
+                    for (final t in ToolCatalog.recommended.take(5))
+                      ToolCard(tool: t, compact: true),
+                  ],
+                ),
+              ),
             ],
           );
         }
@@ -166,12 +175,11 @@ class _SearchViewState extends State<SearchView> {
         if (results.isEmpty) {
           return EmptyState(
             icon: Icons.search_off_rounded,
-            title: 'No tools found',
-            message: 'Nothing matched "$q". Try PDF, QR, compress, or OCR.',
+            title: 'No Results',
+            message: 'Nothing matched "$q".',
           );
         }
 
-        // Group lightly by category for Photos-like organization feel.
         final byCat = <ToolCategory, List<ToolModel>>{};
         for (final t in results) {
           byCat.putIfAbsent(t.category, () => []).add(t);
@@ -180,26 +188,28 @@ class _SearchViewState extends State<SearchView> {
         return ListView(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
           children: [
-            Text(
-              '${results.length} result${results.length == 1 ? '' : 's'}',
-              style: theme.textTheme.bodySmall,
-            ),
-            const SizedBox(height: 12),
             for (final entry in byCat.entries) ...[
               Padding(
-                padding: const EdgeInsets.only(bottom: 8, top: 4),
+                padding: const EdgeInsets.only(bottom: 8, top: 8),
                 child: Text(
-                  entry.key.label,
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: entry.key.accent,
+                  entry.key.label.toUpperCase(),
+                  style: theme.textTheme.labelSmall?.copyWith(
                     fontWeight: FontWeight.w700,
+                    letterSpacing: 0.6,
                   ),
                 ),
               ),
-              ...entry.value.map(
-                (t) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: ToolCard(tool: t),
+              Material(
+                color: theme.cardTheme.color,
+                borderRadius: BorderRadius.circular(AppSpace.radius),
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  children: [
+                    for (var i = 0; i < entry.value.length; i++) ...[
+                      if (i > 0) const Divider(height: 0.5, indent: 58),
+                      ToolCard(tool: entry.value[i], compact: true),
+                    ],
+                  ],
                 ),
               ),
             ],

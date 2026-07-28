@@ -35,87 +35,74 @@ class ToolCard extends StatelessWidget {
             HapticFeedback.mediumImpact();
             _showActions(context, tool, isFav);
           },
-          child: Ink(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppSpace.radius),
-              border: Border.all(
-                color: theme.dividerColor.withValues(alpha: 0.7),
-              ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: compact ? 10 : 12,
             ),
-            child: Padding(
-              padding: EdgeInsets.all(compact ? 12 : 14),
-              child: Row(
-                children: [
-                  Container(
-                    width: compact ? 44 : 48,
-                    height: compact ? 44 : 48,
-                    decoration: BoxDecoration(
-                      color: accent.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(AppSpace.radiusSm),
-                    ),
-                    child: Icon(tool.icon, color: accent, size: compact ? 22 : 24),
+            child: Row(
+              children: [
+                Container(
+                  width: compact ? 40 : 44,
+                  height: compact ? 40 : 44,
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppSpace.radiusSm),
                   ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                tool.name,
-                                style: theme.textTheme.titleSmall?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: theme.colorScheme.onSurface,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                  child: Icon(tool.icon, color: accent, size: compact ? 20 : 22),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              tool.name,
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (!tool.isAvailable)
+                            Text(
+                              'Soon',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: theme.colorScheme.primary,
                               ),
                             ),
-                            if (!tool.isAvailable)
-                              Container(
-                                margin: const EdgeInsets.only(left: 6),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 3,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: theme.colorScheme.surfaceContainerHighest,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  'Soon',
-                                  style: theme.textTheme.labelSmall?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                        if (!compact) ...[
-                          const SizedBox(height: 3),
-                          Text(
-                            tool.description,
-                            style: theme.textTheme.bodySmall,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
                         ],
+                      ),
+                      if (!compact) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          tool.description,
+                          style: theme.textTheme.bodySmall,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ],
-                    ),
+                    ],
                   ),
-                  IconButton(
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () => toggleFavorite(tool),
-                    icon: Icon(
-                      isFav ? Icons.star_rounded : Icons.star_outline_rounded,
-                      color: isFav ? const Color(0xFFEAB308) : theme.iconTheme.color,
-                      size: 22,
-                    ),
+                ),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => toggleFavorite(tool),
+                  icon: Icon(
+                    isFav ? Icons.star_rounded : Icons.star_outline_rounded,
+                    color: isFav
+                        ? const Color(0xFFFFCC00)
+                        : theme.textTheme.bodySmall?.color,
+                    size: 22,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -130,22 +117,23 @@ class ToolCard extends StatelessWidget {
     Get.bottomSheet(
       SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 width: 36,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 16),
+                height: 5,
+                margin: const EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(
                   color: Theme.of(context).dividerColor,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(3),
                 ),
               ),
               ListTile(
                 leading: Icon(
                   isFav ? Icons.star_rounded : Icons.star_outline_rounded,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 title: Text(isFav ? 'Remove from Favorites' : 'Add to Favorites'),
                 onTap: () {
@@ -156,6 +144,7 @@ class ToolCard extends StatelessWidget {
               ListTile(
                 leading: Icon(
                   isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 title: Text(isPinned ? 'Unpin from Home' : 'Pin to Home'),
                 onTap: () {
@@ -164,7 +153,10 @@ class ToolCard extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.open_in_new_rounded),
+                leading: Icon(
+                  Icons.open_in_new_rounded,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 title: const Text('Open'),
                 onTap: () {
                   Get.back();
@@ -176,14 +168,10 @@ class ToolCard extends StatelessWidget {
         ),
       ),
       backgroundColor: Theme.of(context).cardTheme.color,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
     );
   }
 }
 
-/// Canva-style discovery tile for Popular tools.
 class PopularToolTile extends StatelessWidget {
   const PopularToolTile({super.key, required this.tool});
 
@@ -200,42 +188,35 @@ class PopularToolTile extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(AppSpace.radius),
         onTap: () => openTool(tool),
-        child: Ink(
-          width: 148,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSpace.radius),
-            border: Border.all(color: theme.dividerColor.withValues(alpha: 0.7)),
-          ),
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(AppSpace.radiusSm),
+        child: SizedBox(
+          width: 132,
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppSpace.radiusSm),
+                  ),
+                  child: Icon(tool.icon, color: accent, size: 22),
                 ),
-                child: Icon(tool.icon, color: accent, size: 22),
-              ),
-              const Spacer(),
-              Text(
-                tool.name,
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
+                const Spacer(),
+                Text(
+                  tool.name,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 2),
-              Text(
-                tool.category.label,
-                style: theme.textTheme.labelSmall,
-                maxLines: 1,
-              ),
-            ],
+                const SizedBox(height: 2),
+                Text(tool.category.label, style: theme.textTheme.labelSmall),
+              ],
+            ),
           ),
         ),
       ),
@@ -243,7 +224,6 @@ class PopularToolTile extends StatelessWidget {
   }
 }
 
-/// Horizontal chip for Favorites / Recent (Apple Files vibe).
 class ToolChip extends StatelessWidget {
   const ToolChip({super.key, required this.tool});
 
@@ -260,29 +240,25 @@ class ToolChip extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(AppSpace.radius),
         onTap: () => openTool(tool),
-        child: Ink(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSpace.radius),
-            border: Border.all(color: theme.dividerColor.withValues(alpha: 0.7)),
-          ),
-          padding: const EdgeInsets.fromLTRB(10, 10, 14, 10),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 8, 14, 8),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 36,
-                height: 36,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(tool.icon, color: accent, size: 18),
+                child: Icon(tool.icon, color: accent, size: 16),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Text(
                 tool.name,
                 style: theme.textTheme.labelLarge?.copyWith(
-                  color: theme.colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],

@@ -25,13 +25,14 @@ class CategoriesView extends GetView<CategoriesController> {
         ],
       ),
       body: ListView.separated(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+        padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
         itemCount: controller.categories.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
           final cat = controller.categories[index];
-          final tools = ToolCatalog.byCategory(cat);
-          final available = tools.where((t) => t.isAvailable).length;
+          final available = ToolCatalog.byCategory(cat)
+              .where((t) => t.isAvailable)
+              .length;
 
           return Material(
             color: theme.cardTheme.color,
@@ -40,24 +41,18 @@ class CategoriesView extends GetView<CategoriesController> {
               borderRadius: BorderRadius.circular(AppSpace.radius),
               onTap: () =>
                   Get.toNamed(AppRoutes.categoryDetail, arguments: cat),
-              child: Ink(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppSpace.radius),
-                  border: Border.all(
-                    color: theme.dividerColor.withValues(alpha: 0.7),
-                  ),
-                ),
+              child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
                     Container(
-                      width: 52,
-                      height: 52,
+                      width: 48,
+                      height: 48,
                       decoration: BoxDecoration(
                         color: cat.accent.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(cat.icon, color: cat.accent, size: 26),
+                      child: Icon(cat.icon, color: cat.accent, size: 24),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -67,21 +62,17 @@ class CategoriesView extends GetView<CategoriesController> {
                           Text(
                             cat.label,
                             style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: theme.colorScheme.onSurface,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                           const SizedBox(height: 2),
-                          Text(
-                            cat.subtitle,
-                            style: theme.textTheme.bodySmall,
-                          ),
-                          const SizedBox(height: 6),
+                          Text(cat.subtitle, style: theme.textTheme.bodySmall),
+                          const SizedBox(height: 4),
                           Text(
                             '$available available',
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: cat.accent,
-                              fontWeight: FontWeight.w700,
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
@@ -89,7 +80,7 @@ class CategoriesView extends GetView<CategoriesController> {
                     ),
                     Icon(
                       Icons.chevron_right_rounded,
-                      color: theme.iconTheme.color?.withValues(alpha: 0.35),
+                      color: theme.textTheme.bodySmall?.color,
                     ),
                   ],
                 ),
