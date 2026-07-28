@@ -24,7 +24,7 @@ enum ToolCategory {
   String get subtitle => switch (this) {
         ToolCategory.pdf => 'Merge, split, compress & more',
         ToolCategory.images => 'Compress, convert, edit',
-        ToolCategory.documents => 'Markdown, CSV, YAML',
+        ToolCategory.documents => 'Markdown, notes, HTML, XML',
         ToolCategory.qr => 'Generate & scan codes',
         ToolCategory.text => 'Count, convert, format',
         ToolCategory.developer => 'Calc, passwords, timers',

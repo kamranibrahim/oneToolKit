@@ -19,6 +19,9 @@ abstract final class AppRoutes {
   // Documents
   static const String csvJson = '/tools/csv-json';
   static const String yamlJson = '/tools/yaml-json';
+  static const String htmlFormatter = '/tools/html-formatter';
+  static const String xmlFormatter = '/tools/xml-formatter';
+  static const String notepad = '/tools/notepad';
 
   // QR
   static const String qrGenerate = '/tools/qr-generate';
@@ -36,6 +39,7 @@ abstract final class AppRoutes {
   static const String percentageCalculator = '/tools/percentage-calculator';
   static const String stopwatchTimer = '/tools/stopwatch-timer';
   static const String ageCalculator = '/tools/age-calculator';
+  static const String randomGenerator = '/tools/random-generator';
 
   // Images
   static const String imageCompress = '/tools/image-compress';
@@ -82,4 +86,6 @@ abstract final class AppRoutes {
   static const String timestamp = '/tools/timestamp';
   static const String httpStatus = '/tools/http-status';
   static const String mimeTypes = '/tools/mime-types';
+  static const String numberBase = '/tools/number-base';
+  static const String ipCalculator = '/tools/ip-calculator';
 }

@@ -8,6 +8,7 @@ import '../../core/constants/app_constants.dart';
 import '../../data/catalog/tool_catalog.dart';
 import '../../data/services/favorites_service.dart';
 import '../../data/services/history_service.dart';
+import '../../data/services/storage_service.dart';
 import '../../data/services/widget_sync_service.dart';
 import 'settings_controller.dart';
 
@@ -166,6 +167,7 @@ class SettingsView extends GetView<SettingsController> {
     await history.clearHistory();
     await history.clearRecentTools();
     await history.clearRecentSearches();
+    await Get.find<StorageService>().remove(AppConstants.keyNotes);
     Get.snackbar(
       'Cleared',
       'Local preferences were reset.',

@@ -13,11 +13,16 @@ import '../../modules/tools/ai/summarize_view.dart';
 import '../../modules/tools/ai/translate_view.dart';
 import '../../modules/tools/developer/color_converter_view.dart';
 import '../../modules/tools/developer/http_status_view.dart';
+import '../../modules/tools/developer/ip_calculator_view.dart';
 import '../../modules/tools/developer/jwt_decoder_view.dart';
 import '../../modules/tools/developer/mime_types_view.dart';
+import '../../modules/tools/developer/number_base_view.dart';
 import '../../modules/tools/developer/timestamp_view.dart';
 import '../../modules/tools/developer/uuid_generator_view.dart';
 import '../../modules/tools/documents/csv_json_view.dart';
+import '../../modules/tools/documents/html_formatter_view.dart';
+import '../../modules/tools/documents/notepad_view.dart';
+import '../../modules/tools/documents/xml_formatter_view.dart';
 import '../../modules/tools/documents/yaml_json_view.dart';
 import '../../modules/tools/files/batch_rename_view.dart';
 import '../../modules/tools/files/duplicate_finder_view.dart';
@@ -55,6 +60,7 @@ import '../../modules/tools/utilities/age_calculator_view.dart';
 import '../../modules/tools/utilities/calculator_view.dart';
 import '../../modules/tools/utilities/password_generator_view.dart';
 import '../../modules/tools/utilities/percentage_calculator_view.dart';
+import '../../modules/tools/utilities/random_generator_view.dart';
 import '../../modules/tools/utilities/stopwatch_timer_view.dart';
 import '../../modules/tools/utilities/tip_calculator_view.dart';
 import '../../modules/tools/utilities/unit_converter_view.dart';
@@ -102,6 +108,9 @@ abstract final class AppPages {
     // Documents
     GetPage(name: AppRoutes.csvJson, page: () => const CsvJsonView()),
     GetPage(name: AppRoutes.yamlJson, page: () => const YamlJsonView()),
+    GetPage(name: AppRoutes.htmlFormatter, page: () => const HtmlFormatterView()),
+    GetPage(name: AppRoutes.xmlFormatter, page: () => const XmlFormatterView()),
+    GetPage(name: AppRoutes.notepad, page: () => const NotepadView()),
 
     // QR
     GetPage(name: AppRoutes.qrGenerate, page: () => const QrGenerateView()),
@@ -172,6 +181,9 @@ abstract final class AppPages {
     ),
     GetPage(name: AppRoutes.stopwatchTimer, page: () => const StopwatchTimerView()),
     GetPage(name: AppRoutes.ageCalculator, page: () => const AgeCalculatorView()),
+    GetPage(name: AppRoutes.randomGenerator, page: () => const RandomGeneratorView()),
+    GetPage(name: AppRoutes.numberBase, page: () => const NumberBaseConverterView()),
+    GetPage(name: AppRoutes.ipCalculator, page: () => const IpCalculatorView()),
   ];
 }
 
