@@ -13,7 +13,7 @@ class WidgetSyncService extends GetxService {
 
   Future<WidgetSyncService> init() async {
     try {
-      await HomeWidget.setAppGroupId('group.com.onetoolkit.one_toolkit');
+      await HomeWidget.setAppGroupId('group.com.onetoolkit.oneToolkit');
     } catch (_) {
       // App group is iOS-only; ignore on Android / unsupported.
     }

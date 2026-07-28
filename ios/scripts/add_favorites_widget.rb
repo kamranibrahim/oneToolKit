@@ -5,7 +5,7 @@ require 'pathname'
 
 ROOT = Pathname.new(__dir__).parent
 PROJECT_PATH = ROOT + 'Runner.xcodeproj'
-GROUP_ID = 'group.com.onetoolkit.one_toolkit'
+GROUP_ID = 'group.com.onetoolkit.oneToolkit'
 WIDGET_BUNDLE = 'com.onetoolkit.oneToolkit.FavoritesWidget'
 
 project = Xcodeproj::Project.open(PROJECT_PATH.to_s)
