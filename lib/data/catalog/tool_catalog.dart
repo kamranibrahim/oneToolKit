@@ -95,6 +95,7 @@ abstract final class ToolCatalog {
       icon: Icons.lock_rounded,
       route: AppRoutes.pdfProtect,
       keywords: ['encrypt', 'secure', 'password', 'aes'],
+      isRecommended: true,
     ),
     const ToolModel(
       id: 'pdf_unlock',
