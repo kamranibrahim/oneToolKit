@@ -160,8 +160,8 @@ abstract final class ToolCatalog {
       description: 'Crop and trim images',
       category: ToolCategory.images,
       icon: Icons.crop_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.imageCrop,
+      keywords: ['trim', 'cut'],
     ),
     const ToolModel(
       id: 'heic_convert',
@@ -207,8 +207,8 @@ abstract final class ToolCatalog {
       description: 'Pick colors from an image',
       category: ToolCategory.images,
       icon: Icons.colorize_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.colorPicker,
+      keywords: ['hex', 'eyedropper'],
     ),
 
     // ── Documents ────────────────────────────────────────
@@ -462,8 +462,9 @@ abstract final class ToolCatalog {
       description: 'Find duplicate files',
       category: ToolCategory.files,
       icon: Icons.copy_all_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.duplicateFinder,
+      keywords: ['same', 'hash', 'md5'],
+      isRecommended: true,
     ),
 
     // ── AI (future) ──────────────────────────────────────
@@ -482,8 +483,10 @@ abstract final class ToolCatalog {
       description: 'Extract text from images',
       category: ToolCategory.ai,
       icon: Icons.document_scanner_rounded,
-      route: AppRoutes.comingSoon,
-      status: ToolStatus.comingSoon,
+      route: AppRoutes.ocr,
+      keywords: ['text', 'scan', 'recognize'],
+      isRecommended: true,
+      isTrending: true,
     ),
     const ToolModel(
       id: 'ai_translate',

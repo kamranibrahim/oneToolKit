@@ -8,6 +8,7 @@ import '../../modules/search/search_view.dart';
 import '../../modules/shell/shell_binding.dart';
 import '../../modules/shell/shell_view.dart';
 import '../../modules/tools/coming_soon_view.dart';
+import '../../modules/tools/ai/ocr_view.dart';
 import '../../modules/tools/developer/color_converter_view.dart';
 import '../../modules/tools/developer/http_status_view.dart';
 import '../../modules/tools/developer/jwt_decoder_view.dart';
@@ -16,9 +17,12 @@ import '../../modules/tools/developer/timestamp_view.dart';
 import '../../modules/tools/developer/uuid_generator_view.dart';
 import '../../modules/tools/documents/csv_json_view.dart';
 import '../../modules/tools/documents/yaml_json_view.dart';
+import '../../modules/tools/files/duplicate_finder_view.dart';
 import '../../modules/tools/files/file_checksum_view.dart';
 import '../../modules/tools/files/zip_tool_view.dart';
+import '../../modules/tools/images/color_picker_view.dart';
 import '../../modules/tools/images/image_compress_view.dart';
+import '../../modules/tools/images/image_crop_view.dart';
 import '../../modules/tools/images/image_format_convert_view.dart';
 import '../../modules/tools/images/image_resize_view.dart';
 import '../../modules/tools/images/image_rotate_view.dart';
@@ -91,6 +95,8 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.imagesToPdf, page: () => const ImagesToPdfView()),
     GetPage(name: AppRoutes.heicConvert, page: () => const HeicConvertView()),
     GetPage(name: AppRoutes.webpConvert, page: () => const WebpConvertView()),
+    GetPage(name: AppRoutes.imageCrop, page: () => const ImageCropView()),
+    GetPage(name: AppRoutes.colorPicker, page: () => const ColorPickerView()),
 
     // PDF
     GetPage(name: AppRoutes.pdfMerge, page: () => const PdfMergeView()),
@@ -101,6 +107,10 @@ abstract final class AppPages {
     // Files
     GetPage(name: AppRoutes.zipTool, page: () => const ZipToolView()),
     GetPage(name: AppRoutes.checksum, page: () => const FileChecksumView()),
+    GetPage(name: AppRoutes.duplicateFinder, page: () => const DuplicateFinderView()),
+
+    // AI
+    GetPage(name: AppRoutes.ocr, page: () => const OcrView()),
 
     // Developer
     GetPage(name: AppRoutes.jwtDecoder, page: () => const JwtDecoderView()),

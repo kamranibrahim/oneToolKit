@@ -34,6 +34,8 @@ abstract final class AppRoutes {
   static const String imagesToPdf = '/tools/images-to-pdf';
   static const String heicConvert = '/tools/heic-convert';
   static const String webpConvert = '/tools/webp-convert';
+  static const String imageCrop = '/tools/image-crop';
+  static const String colorPicker = '/tools/color-picker';
 
   // PDF
   static const String pdfMerge = '/tools/pdf-merge';
@@ -44,6 +46,10 @@ abstract final class AppRoutes {
   // Files
   static const String zipTool = '/tools/zip';
   static const String checksum = '/tools/checksum';
+  static const String duplicateFinder = '/tools/duplicate-finder';
+
+  // AI
+  static const String ocr = '/tools/ocr';
 
   // Developer
   static const String jwtDecoder = '/tools/jwt-decoder';

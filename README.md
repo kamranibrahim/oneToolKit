@@ -28,9 +28,11 @@ Privacy-first utility toolkit — hundreds of offline productivity tools in one 
 ## Phase 2 (in progress)
 
 - **PDF:** Split, Compress
-- **Images:** HEIC Converter, WebP Converter
+- **Images:** HEIC, WebP, Crop, Color Picker
 - **Documents:** YAML ↔ JSON
-- Next: OCR · Scanner · Duplicate finder · Widgets
+- **Files:** Duplicate Finder
+- **AI:** On-device OCR (ML Kit)
+- Next: Document scanner · PDF protect · Widgets · Translate/Summarize
 
 ## Run
 
