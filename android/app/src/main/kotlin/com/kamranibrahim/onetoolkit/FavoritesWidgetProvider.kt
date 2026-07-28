@@ -1,4 +1,4 @@
-package com.onetoolkit.oneToolkit
+package com.kamranibrahim.onetoolkit
 
 import android.appwidget.AppWidgetManager
 import android.content.Context

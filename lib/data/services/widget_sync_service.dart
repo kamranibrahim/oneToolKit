@@ -13,7 +13,7 @@ class WidgetSyncService extends GetxService {
 
   Future<WidgetSyncService> init() async {
     try {
-      await HomeWidget.setAppGroupId('group.com.onetoolkit.oneToolkit');
+      await HomeWidget.setAppGroupId('group.com.kamranibrahim.onetoolkit');
     } catch (_) {
       // App group is iOS-only; ignore on Android / unsupported.
     }
@@ -80,7 +80,7 @@ class WidgetSyncService extends GetxService {
         name: androidName,
         iOSName: iOSName,
         qualifiedAndroidName:
-            'com.onetoolkit.oneToolkit.FavoritesWidgetProvider',
+            'com.kamranibrahim.onetoolkit.FavoritesWidgetProvider',
       );
     } catch (_) {
       // Widget APIs are best-effort (missing native targets, desktop, etc.).

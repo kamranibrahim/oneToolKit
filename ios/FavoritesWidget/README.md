@@ -5,7 +5,7 @@ WidgetKit extension that shows starred OneToolkit tools.
 ## Requirements
 
 - Paid Apple Developer account (App Groups)
-- App Group id: `group.com.onetoolkit.oneToolkit`
+- App Group id: `group.com.kamranibrahim.onetoolkit`
 - Enable that App Group on **Runner** and **FavoritesWidget** in Xcode → Signing & Capabilities
 
 ## Setup

@@ -36,7 +36,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.onetoolkit.oneToolkit</string>
+			<string>com.kamranibrahim.onetoolkit</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>onetoolkit</string>

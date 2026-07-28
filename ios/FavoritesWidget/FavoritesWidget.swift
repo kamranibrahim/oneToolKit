@@ -1,7 +1,7 @@
 import WidgetKit
 import SwiftUI
 
-private let widgetGroupId = "group.com.onetoolkit.oneToolkit"
+private let widgetGroupId = "group.com.kamranibrahim.onetoolkit"
 
 struct FavoritesProvider: TimelineProvider {
   func placeholder(in context: Context) -> FavoritesEntry {
