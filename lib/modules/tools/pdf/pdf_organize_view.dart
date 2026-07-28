@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../../core/utils/share_helper.dart';
 
+import '../../../core/utils/share_helper.dart';
 import '../../../widgets/tool_scaffold.dart';
+import 'pdf_thumbnails.dart';
 import 'pdf_tool_helpers.dart';
 
 class PdfOrganizeView extends StatefulWidget {
@@ -16,7 +19,9 @@ class PdfOrganizeView extends StatefulWidget {
 class _PdfOrganizeViewState extends State<PdfOrganizeView> {
   PlatformFile? _file;
   final _order = <int>[];
+  Map<int, Uint8List> _thumbs = {};
   bool _busy = false;
+  bool _loadingThumbs = false;
   String? _status;
 
   Future<void> _pick() async {
@@ -25,12 +30,16 @@ class _PdfOrganizeViewState extends State<PdfOrganizeView> {
       allowedExtensions: const ['pdf'],
       withData: false,
     );
-    if (result == null || result.files.isEmpty || result.files.first.path == null) {
+    if (result == null ||
+        result.files.isEmpty ||
+        result.files.first.path == null) {
       return;
     }
     setState(() {
       _busy = true;
+      _loadingThumbs = true;
       _status = 'Reading pages…';
+      _thumbs = {};
     });
     try {
       final file = result.files.first;
@@ -42,12 +51,27 @@ class _PdfOrganizeViewState extends State<PdfOrganizeView> {
         _order
           ..clear()
           ..addAll(List.generate(count, (i) => i));
-        _status = '$count page(s) — drag to reorder';
+        _status = count > 40
+            ? '$count page(s) — first 40 previews loaded'
+            : '$count page(s) — drag to reorder';
+        _busy = false;
+      });
+
+      final thumbs = await PdfThumbnails.render(
+        file.path!,
+        maxPages: 40,
+      );
+      if (!mounted) return;
+      setState(() {
+        _thumbs = thumbs;
+        _loadingThumbs = false;
       });
     } catch (e) {
-      setState(() => _status = 'Failed to open PDF: $e');
-    } finally {
-      setState(() => _busy = false);
+      setState(() {
+        _status = 'Failed to open PDF: $e';
+        _busy = false;
+        _loadingThumbs = false;
+      });
     }
   }
 
@@ -73,11 +97,14 @@ class _PdfOrganizeViewState extends State<PdfOrganizeView> {
         action: 'Reordered',
         detail: '${_order.length} page(s)',
       );
+      if (!mounted) return;
       setState(() => _status = 'Pages reordered');
     } catch (e) {
-      setState(() => _status = 'Organize failed: $e');
+      if (mounted) {
+        setState(() => _status = 'Organize failed: ${friendlyShareError(e)}');
+      }
     } finally {
-      setState(() => _busy = false);
+      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -95,21 +122,31 @@ class _PdfOrganizeViewState extends State<PdfOrganizeView> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Drag pages into a new order, then export a reorganized PDF.',
+                  'Drag page previews into a new order, then export.',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color:
-                        theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                    color: theme.textTheme.bodySmall?.color
+                        ?.withValues(alpha: 0.7),
                   ),
                 ),
                 const SizedBox(height: 12),
                 FilledButton.icon(
-                  onPressed: _busy ? null : _pick,
+                  onPressed: _busy || _loadingThumbs ? null : _pick,
                   icon: const Icon(Icons.picture_as_pdf_rounded),
                   label: Text(_file == null ? 'Choose PDF' : 'Change PDF'),
                 ),
                 if (_file != null) ...[
                   const SizedBox(height: 8),
                   Text(_file!.name, style: theme.textTheme.titleSmall),
+                ],
+                if (_loadingThumbs) ...[
+                  const SizedBox(height: 12),
+                  const LinearProgressIndicator(),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Generating page previews…',
+                    style: theme.textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
                 ],
               ],
             ),
@@ -120,6 +157,13 @@ class _PdfOrganizeViewState extends State<PdfOrganizeView> {
                 : ReorderableListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemCount: _order.length,
+                    proxyDecorator: (child, index, animation) {
+                      return Material(
+                        elevation: 4,
+                        borderRadius: BorderRadius.circular(12),
+                        child: child,
+                      );
+                    },
                     onReorder: _busy
                         ? (oldIndex, newIndex) {}
                         : (oldIndex, newIndex) {
@@ -131,21 +175,41 @@ class _PdfOrganizeViewState extends State<PdfOrganizeView> {
                           },
                     itemBuilder: (context, index) {
                       final page = _order[index];
-                      return ListTile(
-                        key: ValueKey('page-$page-$index'),
-                        leading: CircleAvatar(
-                          backgroundColor:
-                              theme.colorScheme.primary.withValues(alpha: 0.12),
-                          child: Text(
-                            '${index + 1}',
-                            style: TextStyle(
-                              color: theme.colorScheme.primary,
-                              fontWeight: FontWeight.w700,
-                            ),
+                      final thumb = _thumbs[page];
+                      return Card(
+                        key: ValueKey('page-$page'),
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.fromLTRB(8, 8, 12, 8),
+                          leading: SizedBox(
+                            width: 52,
+                            height: 68,
+                            child: thumb == null
+                                ? Container(
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.surfaceContainerHighest,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      '${page + 1}',
+                                      style: theme.textTheme.labelLarge,
+                                    ),
+                                  )
+                                : ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: Image.memory(
+                                      thumb,
+                                      fit: BoxFit.cover,
+                                      width: 52,
+                                      height: 68,
+                                    ),
+                                  ),
                           ),
+                          title: Text('Page ${index + 1}'),
+                          subtitle: Text('Was page ${page + 1}'),
+                          trailing: const Icon(Icons.drag_handle_rounded),
                         ),
-                        title: Text('Original page ${page + 1}'),
-                        trailing: const Icon(Icons.drag_handle_rounded),
                       );
                     },
                   ),

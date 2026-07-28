@@ -60,7 +60,7 @@ No account required. Tools run locally on-device whenever possible. User files s
 
 ## Next (planned)
 
-1. **Harden** — device smoke tests on PDF/share, OCR, QR, widgets  
-2. **Polish** — onboarding, store listing, screenshot set  
-3. **Deepen** — PDF previews / OCR editor polish (not more micro-converters)  
+1. Device smoke tests — Merge/Share, Scan→PDF, OCR, QR, widgets  
+2. Polish — onboarding, store listing, screenshots  
+3. ~~Deepen — PDF page previews + OCR editor~~ **done**  
 4. Optional later — cloud sync / desktop, always opt-in
