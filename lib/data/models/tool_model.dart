@@ -26,8 +26,8 @@ enum ToolCategory {
         ToolCategory.images => 'Compress, convert, edit',
         ToolCategory.documents => 'Notes, HTML, CSS, SQL, XML',
         ToolCategory.qr => 'Generate & scan codes',
-        ToolCategory.text => 'Count, convert, lines, ASCII',
-        ToolCategory.developer => 'Calc, cron, loans, timers',
+        ToolCategory.text => 'Count, convert, format',
+        ToolCategory.developer => 'Passwords, calc, converters',
         ToolCategory.files => 'ZIP, rename, checksum',
         ToolCategory.ai => 'OCR, translate, summarize',
       };

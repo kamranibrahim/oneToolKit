@@ -26,7 +26,6 @@ abstract final class ToolCatalog {
       icon: Icons.call_split_rounded,
       route: AppRoutes.pdfSplit,
       keywords: ['divide', 'pages'],
-      isRecommended: true,
     ),
     const ToolModel(
       id: 'pdf_compress',
@@ -66,7 +65,6 @@ abstract final class ToolCatalog {
       icon: Icons.image_outlined,
       route: AppRoutes.pdfToImages,
       keywords: ['export', 'pages', 'png'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'doc_scanner',
@@ -97,7 +95,6 @@ abstract final class ToolCatalog {
       icon: Icons.lock_rounded,
       route: AppRoutes.pdfProtect,
       keywords: ['encrypt', 'secure', 'password', 'aes'],
-      isRecommended: true,
     ),
     const ToolModel(
       id: 'pdf_unlock',
@@ -156,7 +153,6 @@ abstract final class ToolCatalog {
       icon: Icons.photo_size_select_large_rounded,
       route: AppRoutes.imageResize,
       keywords: ['scale', 'dimensions'],
-      isRecommended: true,
     ),
     const ToolModel(
       id: 'image_rotate',
@@ -184,7 +180,6 @@ abstract final class ToolCatalog {
       icon: Icons.phone_iphone_rounded,
       route: AppRoutes.heicConvert,
       keywords: ['iphone', 'heif'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'webp_convert',
@@ -203,8 +198,8 @@ abstract final class ToolCatalog {
       icon: Icons.layers_clear_rounded,
       route: AppRoutes.bgRemove,
       keywords: ['cutout', 'transparent', 'remove bg', 'subject'],
-      isTrending: true,
       isRecommended: true,
+      isTrending: true,
     ),
     const ToolModel(
       id: 'image_metadata',
@@ -297,7 +292,6 @@ abstract final class ToolCatalog {
       icon: Icons.storage_rounded,
       route: AppRoutes.sqlFormatter,
       keywords: ['query', 'database', 'beautify'],
-      isRecommended: true,
     ),
     const ToolModel(
       id: 'notepad',
@@ -333,6 +327,7 @@ abstract final class ToolCatalog {
       keywords: ['camera', 'reader', 'barcode'],
       aliases: ['scan qr', 'barcode scan'],
       isRecommended: true,
+      isTrending: true,
     ),
     const ToolModel(
       id: 'barcode_generate',
@@ -342,7 +337,6 @@ abstract final class ToolCatalog {
       icon: Icons.view_week_rounded,
       route: AppRoutes.barcodeGenerate,
       keywords: ['ean', 'upc', 'code128', 'label'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'wifi_qr',
@@ -410,7 +404,6 @@ abstract final class ToolCatalog {
       icon: Icons.data_object_rounded,
       route: AppRoutes.jsonFormatter,
       keywords: ['pretty', 'validate'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'base64',
@@ -456,7 +449,6 @@ abstract final class ToolCatalog {
       icon: Icons.format_list_numbered_rounded,
       route: AppRoutes.lineTools,
       keywords: ['sort', 'unique', 'lines', 'list'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'ascii_converter',
@@ -502,7 +494,6 @@ abstract final class ToolCatalog {
       icon: Icons.link_off_rounded,
       route: AppRoutes.slugify,
       keywords: ['slug', 'url', 'permalink', 'seo'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'binary_text',
@@ -532,7 +523,6 @@ abstract final class ToolCatalog {
       icon: Icons.token_rounded,
       route: AppRoutes.jwtDecoder,
       keywords: ['token', 'auth'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'uuid_generator',
@@ -542,7 +532,6 @@ abstract final class ToolCatalog {
       icon: Icons.tag_rounded,
       route: AppRoutes.uuidGenerator,
       keywords: ['guid', 'unique'],
-      isRecommended: true,
     ),
     const ToolModel(
       id: 'color_converter',
@@ -609,6 +598,7 @@ abstract final class ToolCatalog {
       icon: Icons.calculate_rounded,
       route: AppRoutes.calculator,
       keywords: ['math', 'expression', 'compute'],
+      isRecommended: true,
     ),
     const ToolModel(
       id: 'tip_calculator',
@@ -618,7 +608,6 @@ abstract final class ToolCatalog {
       icon: Icons.restaurant_rounded,
       route: AppRoutes.tipCalculator,
       keywords: ['bill', 'gratuity', 'split'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'percentage_calculator',
@@ -637,7 +626,6 @@ abstract final class ToolCatalog {
       icon: Icons.timer_rounded,
       route: AppRoutes.stopwatchTimer,
       keywords: ['countdown', 'laps', 'clock'],
-      isRecommended: true,
     ),
     const ToolModel(
       id: 'age_calculator',
@@ -656,7 +644,6 @@ abstract final class ToolCatalog {
       icon: Icons.casino_rounded,
       route: AppRoutes.randomGenerator,
       keywords: ['dice', 'rng', 'pick'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'number_base',
@@ -666,7 +653,6 @@ abstract final class ToolCatalog {
       icon: Icons.pin_rounded,
       route: AppRoutes.numberBase,
       keywords: ['bin', 'hex', 'oct', 'radix'],
-      isRecommended: true,
     ),
     const ToolModel(
       id: 'ip_calculator',
@@ -685,7 +671,6 @@ abstract final class ToolCatalog {
       icon: Icons.schedule_rounded,
       route: AppRoutes.cronExplainer,
       keywords: ['crontab', 'schedule', 'cronjob'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'loan_calculator',
@@ -695,7 +680,6 @@ abstract final class ToolCatalog {
       icon: Icons.account_balance_rounded,
       route: AppRoutes.loanCalculator,
       keywords: ['mortgage', 'emi', 'interest', 'finance'],
-      isRecommended: true,
     ),
     const ToolModel(
       id: 'bmi_calculator',
@@ -714,7 +698,6 @@ abstract final class ToolCatalog {
       icon: Icons.local_offer_rounded,
       route: AppRoutes.discountCalculator,
       keywords: ['sale', 'coupon', 'percent off'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'query_string',
@@ -724,7 +707,6 @@ abstract final class ToolCatalog {
       icon: Icons.link_rounded,
       route: AppRoutes.queryString,
       keywords: ['url', 'params', 'qs', 'search'],
-      isRecommended: true,
     ),
     const ToolModel(
       id: 'fuel_cost',
@@ -743,7 +725,6 @@ abstract final class ToolCatalog {
       icon: Icons.security_rounded,
       route: AppRoutes.passwordStrength,
       keywords: ['secure', 'weak', 'strong', 'check'],
-      isRecommended: true,
     ),
     const ToolModel(
       id: 'days_until',
@@ -753,7 +734,6 @@ abstract final class ToolCatalog {
       icon: Icons.event_available_rounded,
       route: AppRoutes.daysUntil,
       keywords: ['countdown', 'days', 'date', 'until'],
-      isTrending: true,
     ),
     const ToolModel(
       id: 'rem_px',
@@ -795,7 +775,6 @@ abstract final class ToolCatalog {
       icon: Icons.copy_all_rounded,
       route: AppRoutes.duplicateFinder,
       keywords: ['same', 'hash', 'md5'],
-      isRecommended: true,
     ),
     const ToolModel(
       id: 'batch_rename',
@@ -805,7 +784,6 @@ abstract final class ToolCatalog {
       icon: Icons.drive_file_rename_outline_rounded,
       route: AppRoutes.batchRename,
       keywords: ['rename', 'pattern', 'bulk'],
-      isTrending: true,
     ),
 
     // ── AI ───────────────────────────────────────────────

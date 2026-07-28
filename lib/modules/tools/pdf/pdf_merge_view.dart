@@ -71,7 +71,9 @@ class _PdfMergeViewState extends State<PdfMergeView> {
       if (!mounted) return;
       setState(() => _status = 'Merged ${_files.length} PDFs');
     } catch (e) {
-      if (mounted) setState(() => _status = 'Merge failed: $e');
+      if (mounted) {
+        setState(() => _status = 'Merge failed: ${friendlyShareError(e)}');
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
