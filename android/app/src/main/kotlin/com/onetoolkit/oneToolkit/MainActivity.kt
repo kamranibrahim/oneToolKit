@@ -1,4 +1,4 @@
-package com.onetoolkit.one_toolkit
+package com.onetoolkit.oneToolkit
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -80,7 +80,7 @@ class WidgetSyncService extends GetxService {
         name: androidName,
         iOSName: iOSName,
         qualifiedAndroidName:
-            'com.onetoolkit.one_toolkit.FavoritesWidgetProvider',
+            'com.onetoolkit.oneToolkit.FavoritesWidgetProvider',
       );
     } catch (_) {
       // Widget APIs are best-effort (missing native targets, desktop, etc.).
