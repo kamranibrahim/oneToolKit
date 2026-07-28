@@ -3,6 +3,7 @@ package com.onetoolkit.one_toolkit
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import android.view.View
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetLaunchIntent
@@ -18,9 +19,9 @@ class FavoritesWidgetProvider : HomeWidgetProvider() {
     appWidgetIds.forEach { widgetId ->
       val views =
           RemoteViews(context.packageName, R.layout.favorites_widget).apply {
-            val pendingIntent =
+            val openApp =
                 HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java)
-            setOnClickPendingIntent(R.id.widget_root, pendingIntent)
+            setOnClickPendingIntent(R.id.widget_root, openApp)
 
             setTextViewText(
                 R.id.widget_title,
@@ -40,11 +41,25 @@ class FavoritesWidgetProvider : HomeWidgetProvider() {
                 )
             for (i in toolViews.indices) {
               val name = widgetData.getString("tool_$i", null).orEmpty()
+              val toolId = widgetData.getString("tool_id_$i", null).orEmpty()
               if (name.isEmpty()) {
                 setViewVisibility(toolViews[i], View.GONE)
               } else {
                 setViewVisibility(toolViews[i], View.VISIBLE)
                 setTextViewText(toolViews[i], name)
+                val uri =
+                    if (toolId.isNotEmpty()) {
+                      Uri.parse("onetoolkit://tool/$toolId")
+                    } else {
+                      null
+                    }
+                val pending =
+                    HomeWidgetLaunchIntent.getActivity(
+                        context,
+                        MainActivity::class.java,
+                        uri,
+                    )
+                setOnClickPendingIntent(toolViews[i], pending)
               }
             }
 

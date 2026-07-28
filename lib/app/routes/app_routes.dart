@@ -26,6 +26,12 @@ abstract final class AppRoutes {
   static const String wifiQr = '/tools/wifi-qr';
   static const String contactQr = '/tools/contact-qr';
   static const String emailQr = '/tools/email-qr';
+  static const String barcodeGenerate = '/tools/barcode-generate';
+
+  // Utilities
+  static const String passwordGenerator = '/tools/password-generator';
+  static const String unitConverter = '/tools/unit-converter';
+  static const String calculator = '/tools/calculator';
 
   // Images
   static const String imageCompress = '/tools/image-compress';

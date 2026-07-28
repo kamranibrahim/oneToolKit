@@ -24,12 +24,12 @@ enum ToolCategory {
   String get subtitle => switch (this) {
         ToolCategory.pdf => 'Merge, split, compress & more',
         ToolCategory.images => 'Compress, convert, edit',
-        ToolCategory.documents => 'Word, Excel, Markdown & more',
+        ToolCategory.documents => 'Markdown, CSV, YAML',
         ToolCategory.qr => 'Generate & scan codes',
         ToolCategory.text => 'Count, convert, format',
-        ToolCategory.developer => 'JWT, UUID, timestamps',
-        ToolCategory.files => 'ZIP, rename, checksum',
-        ToolCategory.ai => 'Coming soon',
+        ToolCategory.developer => 'JWT, UUID, passwords, calc',
+        ToolCategory.files => 'ZIP, checksum, duplicates',
+        ToolCategory.ai => 'OCR, translate, summarize',
       };
 
   IconData get icon => switch (this) {

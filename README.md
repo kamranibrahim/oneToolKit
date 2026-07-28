@@ -32,7 +32,13 @@ Privacy-first utility toolkit — hundreds of offline productivity tools in one 
 - **Documents:** YAML ↔ JSON
 - **Files:** Duplicate Finder
 - **AI:** OCR, on-device Translate, offline Summarize
-- **Widgets:** Android + iOS (WidgetKit) favorites home-screen widgets
+- **Widgets:** Android + iOS favorites widgets with tool deep links
+
+## Phase 3 utilities (in progress)
+
+- Password Generator · Unit Converter · Calculator
+- Barcode Generate · Scan Code (QR + barcodes)
+- Settings: clear local data, real app version
 
 ## Run
 

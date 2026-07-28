@@ -20,6 +20,8 @@ void main() {
 
     test('byId returns registered tools', () {
       expect(ToolCatalog.byId('word_counter')?.name, 'Word Counter');
+      expect(ToolCatalog.byId('password_generator')?.name, 'Password Generator');
+      expect(ToolCatalog.byId('barcode_generate')?.route, isNotEmpty);
       expect(ToolCatalog.byId('missing'), isNull);
     });
   });

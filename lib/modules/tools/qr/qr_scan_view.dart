@@ -31,7 +31,7 @@ class _QrScanViewState extends State<QrScanView> {
     });
     ToolScaffold.logAction(
       toolId: 'qr_scan',
-      toolName: 'Scan QR',
+      toolName: 'Scan Code',
       action: 'Scanned',
       detail: raw.length > 40 ? '${raw.substring(0, 40)}…' : raw,
     );
@@ -42,7 +42,7 @@ class _QrScanViewState extends State<QrScanView> {
     final theme = Theme.of(context);
     return ToolScaffold(
       toolId: 'qr_scan',
-      title: 'Scan QR',
+      title: 'Scan Code',
       body: Column(
         children: [
           Expanded(
@@ -75,7 +75,7 @@ class _QrScanViewState extends State<QrScanView> {
                       ),
                       child: SingleChildScrollView(
                         child: SelectableText(
-                          _result ?? 'Point your camera at a QR code',
+                          _result ?? 'Point your camera at a QR or barcode',
                           style: theme.textTheme.bodyMedium,
                         ),
                       ),

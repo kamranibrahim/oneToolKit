@@ -9,7 +9,12 @@ struct FavoritesProvider: TimelineProvider {
       date: Date(),
       title: "OneToolkit",
       subtitle: "Favorites",
-      tools: ["Merge PDF", "OCR", "Translate", "Scan to PDF"]
+      tools: [
+        FavoriteTool(id: "pdf_merge", name: "Merge PDF"),
+        FavoriteTool(id: "ai_ocr", name: "OCR"),
+        FavoriteTool(id: "ai_translate", name: "Translate"),
+        FavoriteTool(id: "doc_scanner", name: "Scan to PDF"),
+      ]
     )
   }
 
@@ -24,10 +29,12 @@ struct FavoritesProvider: TimelineProvider {
 
   private func loadEntry() -> FavoritesEntry {
     let data = UserDefaults(suiteName: widgetGroupId)
-    var tools: [String] = []
+    var tools: [FavoriteTool] = []
     for i in 0..<4 {
-      if let name = data?.string(forKey: "tool_\(i)"), !name.isEmpty {
-        tools.append(name)
+      let name = data?.string(forKey: "tool_\(i)") ?? ""
+      let id = data?.string(forKey: "tool_id_\(i)") ?? ""
+      if !name.isEmpty {
+        tools.append(FavoriteTool(id: id, name: name))
       }
     }
     return FavoritesEntry(
@@ -39,11 +46,16 @@ struct FavoritesProvider: TimelineProvider {
   }
 }
 
+struct FavoriteTool: Hashable {
+  let id: String
+  let name: String
+}
+
 struct FavoritesEntry: TimelineEntry {
   let date: Date
   let title: String
   let subtitle: String
-  let tools: [String]
+  let tools: [FavoriteTool]
 }
 
 struct FavoritesWidgetEntryView: View {
@@ -65,10 +77,20 @@ struct FavoritesWidgetEntryView: View {
           .padding(.top, 4)
       } else {
         ForEach(entry.tools, id: \.self) { tool in
-          Text(tool)
-            .font(.subheadline)
-            .foregroundStyle(Color(red: 0, green: 0.48, blue: 1))
-            .lineLimit(1)
+          if tool.id.isEmpty {
+            Text(tool.name)
+              .font(.subheadline)
+              .foregroundStyle(Color(red: 0, green: 0.48, blue: 1))
+              .lineLimit(1)
+          } else {
+            Link(destination: URL(string: "onetoolkit://tool/\(tool.id)")!) {
+              Text(tool.name)
+                .font(.subheadline)
+                .foregroundStyle(Color(red: 0, green: 0.48, blue: 1))
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+          }
         }
       }
       Spacer(minLength: 0)

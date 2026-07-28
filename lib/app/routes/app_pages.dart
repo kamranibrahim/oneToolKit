@@ -43,11 +43,15 @@ import '../../modules/tools/pdf/pdf_to_images_view.dart';
 import '../../modules/tools/pdf/pdf_unlock_view.dart';
 import '../../modules/tools/pdf/pdf_watermark_view.dart';
 import '../../modules/tools/scanner/document_scanner_view.dart';
+import '../../modules/tools/qr/barcode_generate_view.dart';
 import '../../modules/tools/qr/contact_qr_view.dart';
 import '../../modules/tools/qr/email_qr_view.dart';
 import '../../modules/tools/qr/qr_generate_view.dart';
 import '../../modules/tools/qr/qr_scan_view.dart';
 import '../../modules/tools/qr/wifi_qr_view.dart';
+import '../../modules/tools/utilities/calculator_view.dart';
+import '../../modules/tools/utilities/password_generator_view.dart';
+import '../../modules/tools/utilities/unit_converter_view.dart';
 import '../../modules/tools/text/base64_view.dart';
 import '../../modules/tools/text/case_converter_view.dart';
 import '../../modules/tools/text/diff_checker_view.dart';
@@ -99,6 +103,7 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.wifiQr, page: () => const WifiQrView()),
     GetPage(name: AppRoutes.contactQr, page: () => const ContactQrView()),
     GetPage(name: AppRoutes.emailQr, page: () => const EmailQrView()),
+    GetPage(name: AppRoutes.barcodeGenerate, page: () => const BarcodeGenerateView()),
 
     // Images
     GetPage(name: AppRoutes.imageCompress, page: () => const ImageCompressView()),
@@ -146,6 +151,12 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.timestamp, page: () => const TimestampView()),
     GetPage(name: AppRoutes.httpStatus, page: () => const HttpStatusView()),
     GetPage(name: AppRoutes.mimeTypes, page: () => const MimeTypesView()),
+    GetPage(
+      name: AppRoutes.passwordGenerator,
+      page: () => const PasswordGeneratorView(),
+    ),
+    GetPage(name: AppRoutes.unitConverter, page: () => const UnitConverterView()),
+    GetPage(name: AppRoutes.calculator, page: () => const CalculatorView()),
   ];
 }
 

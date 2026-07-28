@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../data/catalog/tool_catalog.dart';
+import '../../data/services/favorites_service.dart';
+import '../../data/services/history_service.dart';
 import '../../data/services/widget_sync_service.dart';
 import 'settings_controller.dart';
 
@@ -87,6 +90,14 @@ class SettingsView extends GetView<SettingsController> {
                 const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.delete_outline_rounded),
+                  title: const Text('Clear local data'),
+                  subtitle: const Text('Favorites, history, and recent tools'),
+                  onTap: () => _confirmClear(context),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.privacy_tip_outlined),
                   title: const Text('Privacy'),
                   subtitle: const Text('Everything runs locally when possible'),
@@ -97,18 +108,27 @@ class SettingsView extends GetView<SettingsController> {
                   ),
                 ),
                 const Divider(height: 1),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.info_outline_rounded),
-                  title: const Text('About'),
-                  subtitle: Text('$available of $total tools available · v1.0.0'),
-                  onTap: () => _showInfo(
-                    AppConstants.appName,
-                    '${AppConstants.appTagline}\n\n'
-                    'A privacy-first utility toolkit — PDF, images, QR, text, '
-                    'and developer tools in one free offline-first app.\n\n'
-                    'Phase 2 · July 2026',
-                  ),
+                FutureBuilder<PackageInfo>(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    final version = snapshot.data?.version ?? '1.0.0';
+                    final build = snapshot.data?.buildNumber ?? '';
+                    final label = build.isEmpty ? version : '$version+$build';
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.info_outline_rounded),
+                      title: const Text('About'),
+                      subtitle:
+                          Text('$available of $total tools available · v$label'),
+                      onTap: () => _showInfo(
+                        AppConstants.appName,
+                        '${AppConstants.appTagline}\n\n'
+                        'A privacy-first utility toolkit — PDF, images, QR, text, '
+                        'and developer tools in one free offline-first app.\n\n'
+                        'Version $label',
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -123,6 +143,34 @@ class SettingsView extends GetView<SettingsController> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _confirmClear(BuildContext context) async {
+    final ok = await Get.dialog<bool>(
+      AlertDialog(
+        title: const Text('Clear local data?'),
+        content: const Text(
+          'This removes favorites, history, and recent tools from this device. '
+          'Your files are not deleted.',
+        ),
+        actions: [
+          TextButton(onPressed: () => Get.back(result: false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Get.back(result: true), child: const Text('Clear')),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    await Get.find<FavoritesService>().clearFavorites();
+    final history = Get.find<HistoryService>();
+    await history.clearHistory();
+    await history.clearRecentTools();
+    await history.clearRecentSearches();
+    Get.snackbar(
+      'Cleared',
+      'Local preferences were reset.',
+      snackPosition: SnackPosition.BOTTOM,
+      margin: const EdgeInsets.all(16),
     );
   }
 

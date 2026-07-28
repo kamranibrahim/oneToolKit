@@ -2,12 +2,14 @@ import 'package:get/get.dart';
 import 'package:home_widget/home_widget.dart';
 
 import '../catalog/tool_catalog.dart';
+import '../../app/routes/app_pages.dart';
 import 'favorites_service.dart';
 
-/// Syncs favorite tools to the Android home-screen widget.
+/// Syncs favorite tools to home-screen widgets and handles deep links.
 class WidgetSyncService extends GetxService {
   static const androidName = 'FavoritesWidgetProvider';
   static const iOSName = 'FavoritesWidget';
+  static const scheme = 'onetoolkit';
 
   Future<WidgetSyncService> init() async {
     try {
@@ -17,6 +19,39 @@ class WidgetSyncService extends GetxService {
     }
     return this;
   }
+
+  /// Call after GetMaterialApp is ready.
+  Future<void> bindLaunchHandlers() async {
+    try {
+      final initial = await HomeWidget.initiallyLaunchedFromHomeWidget();
+      if (initial != null) {
+        _openFromUri(initial);
+      }
+      HomeWidget.widgetClicked.listen(_openFromUri);
+    } catch (_) {}
+  }
+
+  void _openFromUri(Uri? uri) {
+    if (uri == null) return;
+    if (uri.scheme != scheme) return;
+    if (uri.host != 'tool') return;
+    final toolId = uri.pathSegments.isNotEmpty
+        ? uri.pathSegments.first
+        : (uri.path.isNotEmpty ? uri.path.replaceFirst('/', '') : '');
+    if (toolId.isEmpty) return;
+    final tool = ToolCatalog.byId(toolId);
+    if (tool == null) return;
+    // Defer until navigation stack exists.
+    Future<void>.delayed(const Duration(milliseconds: 350), () {
+      openTool(tool);
+    });
+  }
+
+  static Uri toolUri(String toolId) => Uri(
+        scheme: scheme,
+        host: 'tool',
+        path: '/$toolId',
+      );
 
   Future<void> syncFavorites() async {
     try {

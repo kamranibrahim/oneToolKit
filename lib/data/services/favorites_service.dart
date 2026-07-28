@@ -62,6 +62,12 @@ class FavoritesService extends GetxService {
       .whereType<ToolModel>()
       .toList();
 
+  Future<void> clearFavorites() async {
+    favorites.clear();
+    pinned.clear();
+    await _persist();
+  }
+
   Future<void> _persist() async {
     await _storage.writeStringList(AppConstants.keyFavorites, favorites.toList());
     await _storage.writeStringList(AppConstants.keyPinned, pinned.toList());
