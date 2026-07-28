@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../data/services/favorites_service.dart';
 import '../data/services/history_service.dart';
+import 'empty_state.dart';
 
 /// Shared scaffold for every tool screen.
 class ToolScaffold extends StatelessWidget {
@@ -40,14 +41,23 @@ class ToolScaffold extends StatelessWidget {
               },
               icon: Icon(
                 isFav ? Icons.star_rounded : Icons.star_outline_rounded,
-                color: isFav ? Colors.amber.shade600 : null,
+                color: isFav ? const Color(0xFFEAB308) : null,
               ),
             );
           }),
           ...?actions,
         ],
       ),
-      body: body,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 8),
+            child: OfflineBadge(),
+          ),
+          Expanded(child: body),
+        ],
+      ),
       floatingActionButton: floatingActionButton,
     );
   }

@@ -18,9 +18,9 @@ class CategoryDetailView extends StatelessWidget {
         title: Text(category.label),
       ),
       body: ListView.separated(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
         itemCount: tools.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 8),
+        separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemBuilder: (context, index) => ToolCard(tool: tools[index]),
       ),
     );

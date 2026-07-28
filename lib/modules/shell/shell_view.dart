@@ -37,9 +37,9 @@ class ShellView extends GetView<ShellController> {
               label: 'Home',
             ),
             NavigationDestination(
-              icon: Icon(Icons.grid_view_outlined),
-              selectedIcon: Icon(Icons.grid_view_rounded),
-              label: 'Categories',
+              icon: Icon(Icons.handyman_outlined),
+              selectedIcon: Icon(Icons.handyman_rounded),
+              label: 'Tools',
             ),
             NavigationDestination(
               icon: Icon(Icons.star_outline_rounded),
@@ -47,7 +47,7 @@ class ShellView extends GetView<ShellController> {
               label: 'Favorites',
             ),
             NavigationDestination(
-              icon: Icon(Icons.history_outlined),
+              icon: Icon(Icons.history_rounded),
               selectedIcon: Icon(Icons.history_rounded),
               label: 'History',
             ),

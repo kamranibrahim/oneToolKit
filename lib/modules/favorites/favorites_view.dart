@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../app/theme/app_colors.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/tool_card.dart';
 import 'favorites_controller.dart';
@@ -20,17 +21,17 @@ class FavoritesView extends GetView<FavoritesController> {
             icon: Icons.star_outline_rounded,
             title: 'No favorites yet',
             message:
-                'Long-press any tool or tap the star to add it here. Pin tools to keep them on Home.',
+                'Star tools you use often. They show up here and on Home for one-tap access.',
           );
         }
         return ReorderableListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
           itemCount: tools.length,
           onReorder: controller.reorder,
           proxyDecorator: (child, index, animation) {
             return Material(
-              elevation: 4,
-              borderRadius: BorderRadius.circular(16),
+              elevation: 2,
+              borderRadius: BorderRadius.circular(AppSpace.radius),
               child: child,
             );
           },

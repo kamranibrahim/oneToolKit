@@ -32,11 +32,12 @@ class HistoryView extends GetView<HistoryController> {
           return const EmptyState(
             icon: Icons.history_rounded,
             title: 'No history yet',
-            message: 'Completed tool actions will show up here so you can reopen them quickly.',
+            message:
+                'Finished actions show up here so you can jump back in quickly.',
           );
         }
         return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
           itemCount: items.length,
           separatorBuilder: (context, index) => const SizedBox(height: 8),
           itemBuilder: (context, index) {

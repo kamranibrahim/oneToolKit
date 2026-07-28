@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../app/theme/app_colors.dart';
 import '../../data/catalog/tool_catalog.dart';
+import '../../data/models/tool_model.dart';
 import '../../data/services/history_service.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/tool_card.dart';
@@ -19,6 +21,17 @@ class _SearchViewState extends State<SearchView> {
   final _query = ''.obs;
   final _history = Get.find<HistoryService>();
 
+  static const _suggestions = [
+    'PDF',
+    'Compress',
+    'QR',
+    'HEIC',
+    'OCR',
+    'ZIP',
+    'JSON',
+    'UUID',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -32,8 +45,16 @@ class _SearchViewState extends State<SearchView> {
     super.dispose();
   }
 
+  void _apply(String value) {
+    _controller.text = value;
+    _query.value = value;
+    _history.addSearch(value);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -41,9 +62,14 @@ class _SearchViewState extends State<SearchView> {
           controller: _controller,
           focusNode: _focus,
           decoration: const InputDecoration(
-            hintText: 'Search tools…',
+            hintText: 'Search everything',
             border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
             filled: false,
+          ),
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: theme.colorScheme.onSurface,
           ),
           textInputAction: TextInputAction.search,
           onChanged: (v) => _query.value = v,
@@ -65,14 +91,74 @@ class _SearchViewState extends State<SearchView> {
       body: Obx(() {
         final q = _query.value.trim();
         if (q.isEmpty) {
-          return _RecentSearches(
-            searches: _history.recentSearches.toList(),
-            onSelect: (s) {
-              _controller.text = s;
-              _query.value = s;
-              _history.addSearch(s);
-            },
-            onClear: () => _history.clearRecentSearches(),
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+            children: [
+              Text(
+                'Suggestions',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _suggestions
+                    .map(
+                      (s) => ActionChip(
+                        label: Text(s),
+                        avatar: const Icon(Icons.north_west_rounded, size: 14),
+                        onPressed: () => _apply(s),
+                      ),
+                    )
+                    .toList(),
+              ),
+              const SizedBox(height: AppSpace.lg),
+              if (_history.recentSearches.isNotEmpty) ...[
+                Row(
+                  children: [
+                    Text(
+                      'Recent',
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: _history.clearRecentSearches,
+                      child: const Text('Clear'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                ..._history.recentSearches.map(
+                  (s) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.history_rounded),
+                    title: Text(s),
+                    onTap: () => _apply(s),
+                  ),
+                ),
+                const SizedBox(height: AppSpace.md),
+              ],
+              Text(
+                'Popular',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 10),
+              ...ToolCatalog.recommended.take(5).map(
+                    (t) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: ToolCard(tool: t, compact: true),
+                    ),
+                  ),
+            ],
           );
         }
 
@@ -81,79 +167,45 @@ class _SearchViewState extends State<SearchView> {
           return EmptyState(
             icon: Icons.search_off_rounded,
             title: 'No tools found',
-            message: 'Nothing matched "$q". Try another keyword.',
+            message: 'Nothing matched "$q". Try PDF, QR, compress, or OCR.',
           );
         }
 
-        return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-          itemCount: results.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 8),
-          itemBuilder: (context, index) {
-            final tool = results[index];
-            return ToolCard(tool: tool);
-          },
-        );
-      }),
-    );
-  }
-}
+        // Group lightly by category for Photos-like organization feel.
+        final byCat = <ToolCategory, List<ToolModel>>{};
+        for (final t in results) {
+          byCat.putIfAbsent(t.category, () => []).add(t);
+        }
 
-class _RecentSearches extends StatelessWidget {
-  const _RecentSearches({
-    required this.searches,
-    required this.onSelect,
-    required this.onClear,
-  });
-
-  final List<String> searches;
-  final ValueChanged<String> onSelect;
-  final VoidCallback onClear;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    if (searches.isEmpty) {
-      return const EmptyState(
-        icon: Icons.search_rounded,
-        title: 'Search tools',
-        message: 'Try "pdf", "qr", "compress", "json", or "uuid".',
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                'Recent searches',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
+        return ListView(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+          children: [
+            Text(
+              '${results.length} result${results.length == 1 ? '' : 's'}',
+              style: theme.textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            for (final entry in byCat.entries) ...[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8, top: 4),
+                child: Text(
+                  entry.key.label,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: entry.key.accent,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
-              const Spacer(),
-              TextButton(onPressed: onClear, child: const Text('Clear')),
+              ...entry.value.map(
+                (t) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: ToolCard(tool: t),
+                ),
+              ),
             ],
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: searches
-                .map(
-                  (s) => ActionChip(
-                    label: Text(s),
-                    onPressed: () => onSelect(s),
-                    avatar: const Icon(Icons.history_rounded, size: 16),
-                  ),
-                )
-                .toList(),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 }
