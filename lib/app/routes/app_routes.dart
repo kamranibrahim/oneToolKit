@@ -36,12 +36,17 @@ abstract final class AppRoutes {
   static const String webpConvert = '/tools/webp-convert';
   static const String imageCrop = '/tools/image-crop';
   static const String colorPicker = '/tools/color-picker';
+  static const String imageMetadata = '/tools/image-metadata';
 
   // PDF
   static const String pdfMerge = '/tools/pdf-merge';
   static const String pdfToImages = '/tools/pdf-to-images';
   static const String pdfSplit = '/tools/pdf-split';
   static const String pdfCompress = '/tools/pdf-compress';
+  static const String pdfProtect = '/tools/pdf-protect';
+  static const String pdfUnlock = '/tools/pdf-unlock';
+  static const String pdfRotate = '/tools/pdf-rotate';
+  static const String docScanner = '/tools/doc-scanner';
 
   // Files
   static const String zipTool = '/tools/zip';

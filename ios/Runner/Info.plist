@@ -9,7 +9,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>OneToolkit</string>
 	<key>NSCameraUsageDescription</key>
-	<string>OneToolkit needs camera access to scan QR codes.</string>
+	<string>OneToolkit needs camera access to scan QR codes and documents.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>OneToolkit needs photo access to compress, resize, and convert images locally.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

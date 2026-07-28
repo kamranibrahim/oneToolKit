@@ -24,13 +24,18 @@ import '../../modules/tools/images/color_picker_view.dart';
 import '../../modules/tools/images/image_compress_view.dart';
 import '../../modules/tools/images/image_crop_view.dart';
 import '../../modules/tools/images/image_format_convert_view.dart';
+import '../../modules/tools/images/image_metadata_view.dart';
 import '../../modules/tools/images/image_resize_view.dart';
 import '../../modules/tools/images/image_rotate_view.dart';
 import '../../modules/tools/images/images_to_pdf_view.dart';
 import '../../modules/tools/pdf/pdf_compress_view.dart';
 import '../../modules/tools/pdf/pdf_merge_view.dart';
+import '../../modules/tools/pdf/pdf_protect_view.dart';
+import '../../modules/tools/pdf/pdf_rotate_view.dart';
 import '../../modules/tools/pdf/pdf_split_view.dart';
 import '../../modules/tools/pdf/pdf_to_images_view.dart';
+import '../../modules/tools/pdf/pdf_unlock_view.dart';
+import '../../modules/tools/scanner/document_scanner_view.dart';
 import '../../modules/tools/qr/contact_qr_view.dart';
 import '../../modules/tools/qr/email_qr_view.dart';
 import '../../modules/tools/qr/qr_generate_view.dart';
@@ -97,12 +102,17 @@ abstract final class AppPages {
     GetPage(name: AppRoutes.webpConvert, page: () => const WebpConvertView()),
     GetPage(name: AppRoutes.imageCrop, page: () => const ImageCropView()),
     GetPage(name: AppRoutes.colorPicker, page: () => const ColorPickerView()),
+    GetPage(name: AppRoutes.imageMetadata, page: () => const ImageMetadataView()),
 
     // PDF
     GetPage(name: AppRoutes.pdfMerge, page: () => const PdfMergeView()),
     GetPage(name: AppRoutes.pdfToImages, page: () => const PdfToImagesView()),
     GetPage(name: AppRoutes.pdfSplit, page: () => const PdfSplitView()),
     GetPage(name: AppRoutes.pdfCompress, page: () => const PdfCompressView()),
+    GetPage(name: AppRoutes.pdfProtect, page: () => const PdfProtectView()),
+    GetPage(name: AppRoutes.pdfUnlock, page: () => const PdfUnlockView()),
+    GetPage(name: AppRoutes.pdfRotate, page: () => const PdfRotateView()),
+    GetPage(name: AppRoutes.docScanner, page: () => const DocumentScannerView()),
 
     // Files
     GetPage(name: AppRoutes.zipTool, page: () => const ZipToolView()),
