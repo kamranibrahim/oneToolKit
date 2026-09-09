@@ -1,13 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:share_plus/share_plus.dart';
 import '../../../core/utils/share_helper.dart';
+import '../../../data/models/shared_file.dart';
+import '../../../data/services/pending_share_service.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -22,6 +24,23 @@ class _ImagesToPdfViewState extends State<ImagesToPdfView> {
   final _picker = ImagePicker();
   final _images = <XFile>[];
   bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final share = Get.isRegistered<PendingShareService>()
+        ? Get.find<PendingShareService>()
+        : null;
+    final files = share?.takeFor('images_to_pdf') ?? const <SharedFile>[];
+    if (files.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        setState(() {
+          _images.addAll(files.map((f) => XFile(f.path, mimeType: f.mime)));
+        });
+      });
+    }
+  }
 
   Future<void> _pick() async {
     final files = await _picker.pickMultiImage();

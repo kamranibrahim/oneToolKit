@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf_combiner/models/merge_input.dart';
 import 'package:pdf_combiner/pdf_combiner.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/utils/share_helper.dart';
+import '../../../data/models/shared_file.dart';
+import '../../../data/services/pending_share_service.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -20,6 +25,37 @@ class _PdfMergeViewState extends State<PdfMergeView> {
   final _files = <PlatformFile>[];
   bool _busy = false;
   String? _status;
+
+  @override
+  void initState() {
+    super.initState();
+    final share = Get.isRegistered<PendingShareService>()
+        ? Get.find<PendingShareService>()
+        : null;
+    final files = share?.takeFor('pdf_merge') ?? const <SharedFile>[];
+    if (files.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final added = <PlatformFile>[];
+        for (final f in files) {
+          final file = File(f.path);
+          if (!file.existsSync()) continue;
+          added.add(
+            PlatformFile(
+              name: p.basename(f.path),
+              path: f.path,
+              size: file.lengthSync(),
+            ),
+          );
+        }
+        if (added.isEmpty) return;
+        setState(() {
+          _files.addAll(added);
+          _status = null;
+        });
+      });
+    }
+  }
 
   Future<void> _pick() async {
     final result = await FilePicker.platform.pickFiles(

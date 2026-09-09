@@ -2,12 +2,14 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../../core/utils/share_helper.dart';
+import '../../../data/models/shared_file.dart';
+import '../../../data/services/pending_share_service.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -26,6 +28,30 @@ class _ImageCompressViewState extends State<ImageCompressView> {
   int? _originalSize;
   int? _compressedSize;
   bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final share = Get.isRegistered<PendingShareService>()
+        ? Get.find<PendingShareService>()
+        : null;
+    final files = share?.takeFor('image_compress') ?? const <SharedFile>[];
+    if (files.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        final file = XFile(files.first.path, mimeType: files.first.mime);
+        final bytes = await file.readAsBytes();
+        if (!mounted) return;
+        setState(() {
+          _original = file;
+          _originalSize = bytes.length;
+          _compressed = null;
+          _compressedSize = null;
+        });
+        await _compress();
+      });
+    }
+  }
 
   Future<void> _pick() async {
     final file = await _picker.pickImage(source: ImageSource.gallery);
