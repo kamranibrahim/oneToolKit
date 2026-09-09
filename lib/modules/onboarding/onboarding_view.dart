@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../app/routes/app_routes.dart';
 import '../../app/theme/app_colors.dart';
 import '../../core/constants/app_constants.dart';
+import '../../data/services/pending_share_service.dart';
 import '../../data/services/storage_service.dart';
 
 class OnboardingView extends StatefulWidget {
@@ -43,7 +44,10 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   Future<void> _finish() async {
     await Get.find<StorageService>().write(AppConstants.keyOnboardingDone, true);
-    Get.offAllNamed(AppRoutes.shell);
+    await Get.offAllNamed(AppRoutes.shell);
+    if (Get.isRegistered<PendingShareService>()) {
+      await Get.find<PendingShareService>().presentIfNeeded();
+    }
   }
 
   void _next() {
