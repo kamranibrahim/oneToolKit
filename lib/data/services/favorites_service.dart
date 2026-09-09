@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/shortcut_ids.dart';
 import '../catalog/tool_catalog.dart';
 import '../models/tool_model.dart';
 import 'storage_service.dart';
@@ -61,6 +62,9 @@ class FavoritesService extends GetxService {
       .map(ToolCatalog.byId)
       .whereType<ToolModel>()
       .toList();
+
+  List<String> shortcutIds({int limit = 4}) =>
+      mergeShortcutIds(pinned: pinned, favorites: favorites, limit: limit);
 
   Future<void> clearFavorites() async {
     favorites.clear();
