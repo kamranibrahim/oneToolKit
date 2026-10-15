@@ -32,8 +32,8 @@ android {
         applicationId = "com.kamranibrahim.onetoolkit"
         minSdk = 24
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        versionCode = 4
+        versionName = "1.0.0"
     }
 
     signingConfigs {

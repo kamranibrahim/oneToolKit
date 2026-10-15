@@ -61,6 +61,17 @@ class HomeView extends GetView<HomeController> {
                     const OfflineBadge(),
                     const SizedBox(height: 16),
                     const _IosSearchField(),
+                    const SizedBox(height: 12),
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.folder_copy_outlined),
+                      title: const Text('Saved work'),
+                      subtitle: const Text(
+                        'Keep files, reopen results, resume tasks',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => Get.toNamed(AppRoutes.savedWork),
+                    ),
                   ],
                 ),
               ),
@@ -74,11 +85,71 @@ class HomeView extends GetView<HomeController> {
               final favs = controller.favoriteTools;
               final recent = controller.recent;
               final actions = controller.recentActions;
+              final continueAction = controller.continueAction;
+              final continueTool = continueAction == null
+                  ? null
+                  : ToolCatalog.byId(continueAction.toolId);
+              final notepadTool = ToolCatalog.byId('notepad');
+              final showContinue = controller.showContinue;
+              final hasNotes = controller.hasNotes;
+              final noteCount = controller.noteCount;
 
               return SliverPadding(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
                 sliver: ContainedSliverList(
                   children: [
+                    if (showContinue) ...[
+                      const SectionHeader(title: 'Continue'),
+                      Material(
+                        color: theme.cardTheme.color,
+                        borderRadius: BorderRadius.circular(AppSpace.radius),
+                        child: Column(
+                          children: [
+                            if (continueAction != null)
+                              _ContinueRow(
+                                icon:
+                                    continueTool?.icon ?? Icons.history_rounded,
+                                iconColor:
+                                    continueTool?.category.accent ??
+                                    theme.colorScheme.primary,
+                                title: continueAction.toolName,
+                                subtitle: continueAction.detail == null
+                                    ? continueAction.action
+                                    : '${continueAction.action} · ${continueAction.detail}',
+                                onTap: continueTool == null
+                                    ? null
+                                    : () => openTool(continueTool),
+                                isFirst: true,
+                                isLast: !hasNotes,
+                              ),
+                            if (continueAction != null && hasNotes)
+                              Divider(
+                                height: 0.5,
+                                indent: 58,
+                                color: theme.dividerColor,
+                              ),
+                            if (hasNotes)
+                              _ContinueRow(
+                                icon:
+                                    notepadTool?.icon ??
+                                    Icons.sticky_note_2_outlined,
+                                iconColor:
+                                    notepadTool?.category.accent ??
+                                    theme.colorScheme.primary,
+                                title: 'Notepad',
+                                subtitle: noteCount == 1
+                                    ? '1 note'
+                                    : '$noteCount notes',
+                                onTap: notepadTool == null
+                                    ? null
+                                    : () => openTool(notepadTool),
+                                isFirst: continueAction == null,
+                                isLast: true,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
                     if (favs.isNotEmpty) ...[
                       SectionHeader(
                         title: 'Favorites',
@@ -148,14 +219,19 @@ class HomeView extends GetView<HomeController> {
                                   final item = actions[i];
                                   final tool = ToolCatalog.byId(item.toolId);
                                   return InkWell(
-                                    onTap:
-                                        tool == null ? null : () => openTool(tool),
+                                    onTap: tool == null
+                                        ? null
+                                        : () => openTool(tool),
                                     borderRadius: BorderRadius.vertical(
                                       top: i == 0
-                                          ? const Radius.circular(AppSpace.radius)
+                                          ? const Radius.circular(
+                                              AppSpace.radius,
+                                            )
                                           : Radius.zero,
                                       bottom: i == actions.length - 1
-                                          ? const Radius.circular(AppSpace.radius)
+                                          ? const Radius.circular(
+                                              AppSpace.radius,
+                                            )
                                           : Radius.zero,
                                     ),
                                     child: Padding(
@@ -167,7 +243,8 @@ class HomeView extends GetView<HomeController> {
                                         children: [
                                           Icon(
                                             tool?.icon ?? Icons.history_rounded,
-                                            color: tool?.category.accent ??
+                                            color:
+                                                tool?.category.accent ??
                                                 theme.colorScheme.primary,
                                             size: 22,
                                           ),
@@ -180,7 +257,8 @@ class HomeView extends GetView<HomeController> {
                                                 Text(
                                                   item.toolName,
                                                   style: theme
-                                                      .textTheme.titleSmall,
+                                                      .textTheme
+                                                      .titleSmall,
                                                 ),
                                                 Text(
                                                   item.detail == null
@@ -198,7 +276,9 @@ class HomeView extends GetView<HomeController> {
                                           Icon(
                                             Icons.chevron_right_rounded,
                                             color: theme
-                                                .textTheme.bodySmall?.color,
+                                                .textTheme
+                                                .bodySmall
+                                                ?.color,
                                           ),
                                         ],
                                       ),
@@ -260,6 +340,65 @@ class _IosSearchField extends StatelessWidget {
   }
 }
 
+class _ContinueRow extends StatelessWidget {
+  const _ContinueRow({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    required this.isFirst,
+    required this.isLast,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String subtitle;
+  final VoidCallback? onTap;
+  final bool isFirst;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.vertical(
+        top: isFirst ? const Radius.circular(AppSpace.radius) : Radius.zero,
+        bottom: isLast ? const Radius.circular(AppSpace.radius) : Radius.zero,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          children: [
+            Icon(icon, color: iconColor, size: 22),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: theme.textTheme.titleSmall),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: theme.textTheme.bodySmall?.color,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _CategoryGrid extends StatelessWidget {
   const _CategoryGrid({required this.categories});
 
@@ -291,8 +430,9 @@ class _CategoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final available =
-        ToolCatalog.byCategory(category).where((t) => t.isAvailable).length;
+    final available = ToolCatalog.byCategory(
+      category,
+    ).where((t) => t.isAvailable).length;
 
     return Material(
       color: theme.cardTheme.color,
@@ -315,10 +455,7 @@ class _CategoryTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                '$available tools',
-                style: theme.textTheme.labelSmall,
-              ),
+              Text('$available tools', style: theme.textTheme.labelSmall),
             ],
           ),
         ),

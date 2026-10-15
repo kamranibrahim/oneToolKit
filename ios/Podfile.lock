@@ -140,6 +140,9 @@ PODS:
     - Flutter
   - package_info_plus (0.4.5):
     - Flutter
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - pdf_combiner (0.0.1):
     - Flutter
   - permission_handler_apple (9.4.8):
@@ -173,6 +176,7 @@ DEPENDENCIES:
   - mobile_scanner (from `.symlinks/plugins/mobile_scanner/darwin`)
   - native_cutout (from `.symlinks/plugins/native_cutout/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - pdf_combiner (from `.symlinks/plugins/pdf_combiner/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - printing (from `.symlinks/plugins/printing/ios`)
@@ -230,6 +234,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/native_cutout/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   pdf_combiner:
     :path: ".symlinks/plugins/pdf_combiner/ios"
   permission_handler_apple:
@@ -269,6 +275,7 @@ SPEC CHECKSUMS:
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   native_cutout: 292b2d5c002b6e361072231b30b8bbb275e2f266
   package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
+  path_provider_foundation: 0b743cbb62d8e47eab856f09262bb8c1ddcfe6ba
   pdf_combiner: 1650a9e0efb5f1d8d86c42120c1e9194a23cbac4
   permission_handler_apple: ee2fe0fd04551b304eb002714ff067c371c822ed
   printing: 233e1b73bd1f4a05615548e9b5a324c98588640b

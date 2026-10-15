@@ -6,6 +6,7 @@ import '../../data/services/history_service.dart';
 import '../../modules/onboarding/onboarding_view.dart';
 import '../../modules/categories/category_detail_view.dart';
 import '../../modules/search/search_view.dart';
+import '../../modules/saved_work/saved_work_view.dart';
 import '../../modules/shell/shell_binding.dart';
 import '../../modules/shell/shell_view.dart';
 import '../../modules/tools/coming_soon_view.dart';
@@ -97,6 +98,7 @@ import 'app_routes.dart';
 
 abstract final class AppPages {
   static final pages = <GetPage>[
+    GetPage(name: AppRoutes.savedWork, page: () => const SavedWorkView()),
     GetPage(
       name: AppRoutes.shell,
       page: () => const ShellView(),
@@ -232,7 +234,7 @@ abstract final class AppPages {
 }
 
 /// Opens a tool and records it in recent history.
-Future<void> openTool(ToolModel tool) async {
+Future<void> openTool(ToolModel tool, {bool preventDuplicates = true}) async {
   final history = Get.find<HistoryService>();
   await history.recordToolOpen(tool.id);
 
@@ -240,7 +242,7 @@ Future<void> openTool(ToolModel tool) async {
     Get.toNamed(AppRoutes.comingSoon, arguments: tool);
     return;
   }
-  Get.toNamed(tool.route, arguments: tool);
+  Get.toNamed(tool.route, arguments: tool, preventDuplicates: preventDuplicates);
 }
 
 void toggleFavorite(ToolModel tool) {

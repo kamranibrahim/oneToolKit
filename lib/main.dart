@@ -7,19 +7,29 @@ import 'package:get_storage/get_storage.dart';
 import 'app/app.dart';
 import 'data/services/favorites_service.dart';
 import 'data/services/history_service.dart';
+import 'data/services/pending_share_service.dart';
 import 'data/services/storage_service.dart';
 import 'data/services/widget_sync_service.dart';
 import 'modules/settings/settings_controller.dart';
+import 'data/services/saved_work_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
 
-  final storage = await Get.putAsync(() => StorageService().init(), permanent: true);
+  final storage = await Get.putAsync(
+    () => StorageService().init(),
+    permanent: true,
+  );
   Get.put(FavoritesService(storage), permanent: true);
   Get.put(HistoryService(storage), permanent: true);
+  Get.put(PendingShareService(), permanent: true);
+  await Get.putAsync(() => SavedWorkService().init(), permanent: true);
   Get.put(SettingsController(storage), permanent: true);
-  final widgets = await Get.putAsync(() => WidgetSyncService().init(), permanent: true);
+  final widgets = await Get.putAsync(
+    () => WidgetSyncService().init(),
+    permanent: true,
+  );
   await widgets.syncFavorites();
 
   runApp(const OneToolkitApp());
@@ -27,5 +37,6 @@ Future<void> main() async {
   // After first frame so Get navigation is ready for deep links.
   WidgetsBinding.instance.addPostFrameCallback((_) {
     unawaited(widgets.bindLaunchHandlers());
+    unawaited(Get.find<PendingShareService>().presentIfNeeded());
   });
 }

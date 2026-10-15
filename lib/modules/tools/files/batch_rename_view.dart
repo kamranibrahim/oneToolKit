@@ -1,14 +1,12 @@
-import 'dart:io';
-
-import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
+import '../../../data/processing/archive_operations.dart';
+import '../../../data/processing/file_names.dart';
 
 class BatchRenameView extends StatefulWidget {
   const BatchRenameView({super.key});
@@ -32,7 +30,7 @@ class _BatchRenameViewState extends State<BatchRenameView> {
 
   Future<void> _pick() async {
     final result = await FilePicker.platform.pickFiles(allowMultiple: true);
-    if (result == null) return;
+    if (result == null || !mounted) return;
     setState(() {
       _files
         ..clear()
@@ -41,18 +39,11 @@ class _BatchRenameViewState extends State<BatchRenameView> {
     });
   }
 
-  String _newName(PlatformFile file, int index) {
-    final original = file.name;
-    final stem = p.basenameWithoutExtension(original);
-    final ext = p.extension(original); // includes dot
-    final n = (_start + index).toString().padLeft(2, '0');
-    var out = _pattern.text
-        .replaceAll('{name}', stem)
-        .replaceAll('{n}', n)
-        .replaceAll('{ext}', ext.replaceFirst('.', ''));
-    if (!out.contains('.') && ext.isNotEmpty) out = '$out$ext';
-    return out;
-  }
+  List<String> _names() => FileNames.rename(
+    _files.map((f) => f.name).toList(),
+    _pattern.text,
+    _start,
+  );
 
   Future<void> _export() async {
     if (_files.isEmpty) return;
@@ -61,30 +52,13 @@ class _BatchRenameViewState extends State<BatchRenameView> {
       _status = 'Preparing renamed copies…';
     });
     try {
+      final names = _names();
+      final inputs = [
+        for (var i = 0; i < _files.length; i++)
+          ArchiveInput(_files[i].path!, names[i]),
+      ];
       final dir = await getTemporaryDirectory();
-      final work = Directory(
-        p.join(dir.path, 'rename_${DateTime.now().millisecondsSinceEpoch}'),
-      );
-      await work.create(recursive: true);
-
-      final outputs = <File>[];
-      for (var i = 0; i < _files.length; i++) {
-        final src = File(_files[i].path!);
-        final dest = File(p.join(work.path, _newName(_files[i], i)));
-        await src.copy(dest.path);
-        outputs.add(dest);
-      }
-
-      final zipPath = p.join(
-        dir.path,
-        'renamed_${DateTime.now().millisecondsSinceEpoch}.zip',
-      );
-      final encoder = ZipFileEncoder()..create(zipPath);
-      for (final file in outputs) {
-        await encoder.addFile(file, p.basename(file.path));
-      }
-      await encoder.close();
-
+      final zipPath = await ArchiveOperations.create(inputs, dir.path);
       if (!mounted) return;
       await shareFiles(context, [XFile(zipPath, mimeType: 'application/zip')]);
       await ToolScaffold.logAction(
@@ -93,17 +67,26 @@ class _BatchRenameViewState extends State<BatchRenameView> {
         action: 'Renamed',
         detail: '${_files.length} files',
       );
-      setState(() => _status = 'Exported ${_files.length} renamed file(s)');
+      if (mounted) {
+        setState(() => _status = 'Prepared ${names.length} renamed files');
+      }
     } catch (e) {
-      setState(() => _status = 'Rename failed: $e');
+      if (mounted) setState(() => _status = 'Rename failed: $e');
     } finally {
-      setState(() => _busy = false);
+      if (mounted) setState(() => _busy = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    List<String>? names;
+    String? validationError;
+    try {
+      names = _names();
+    } catch (e) {
+      validationError = e.toString().replaceFirst('FormatException: ', '');
+    }
     return ToolScaffold(
       toolId: 'batch_rename',
       title: 'Batch Rename',
@@ -154,17 +137,29 @@ class _BatchRenameViewState extends State<BatchRenameView> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text('→ ${_newName(_files[i], i)}'),
+                subtitle: Text(
+                  names == null ? 'Invalid output name' : '→ ${names[i]}',
+                ),
               );
             }),
           ],
+          if (validationError != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(
+                validationError,
+                style: TextStyle(color: theme.colorScheme.error),
+              ),
+            ),
           if (_status != null) ...[
             const SizedBox(height: 8),
             Text(_status!, textAlign: TextAlign.center),
           ],
           const SizedBox(height: 12),
           FilledButton(
-            onPressed: _files.isEmpty || _busy ? null : _export,
+            onPressed: _files.isEmpty || _busy || validationError != null
+                ? null
+                : _export,
             child: Text(_busy ? 'Working…' : 'Export renamed ZIP'),
           ),
         ],

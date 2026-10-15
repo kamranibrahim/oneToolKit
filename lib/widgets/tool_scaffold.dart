@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../data/services/favorites_service.dart';
 import '../data/services/history_service.dart';
 import 'empty_state.dart';
+import 'pending_share_banner.dart';
 
 /// Shared scaffold for every tool screen.
 class ToolScaffold extends StatelessWidget {
@@ -51,6 +52,7 @@ class ToolScaffold extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          const PendingShareBanner(),
           const Padding(
             padding: EdgeInsets.fromLTRB(20, 0, 20, 8),
             child: OfflineBadge(),
@@ -87,7 +89,10 @@ class ToolScaffold extends StatelessWidget {
       margin: const EdgeInsets.all(12),
       borderRadius: 12,
       messageText: const SizedBox.shrink(),
-      titleText: Text(message, style: const TextStyle(fontWeight: FontWeight.w600)),
+      titleText: Text(
+        message,
+        style: const TextStyle(fontWeight: FontWeight.w600),
+      ),
     );
   }
 }

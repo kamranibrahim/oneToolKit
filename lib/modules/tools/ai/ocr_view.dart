@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../../data/services/pending_share_service.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
@@ -26,6 +28,16 @@ class _OcrViewState extends State<OcrView> {
   String? _status;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !Get.isRegistered<PendingShareService>()) return;
+      final files = Get.find<PendingShareService>().takeFor('ai_ocr');
+      if (files.isNotEmpty) _recognize(files.first.path);
+    });
+  }
+
+  @override
   void dispose() {
     _recognizer.close();
     _editor.dispose();
@@ -40,17 +52,22 @@ class _OcrViewState extends State<OcrView> {
 
   Future<void> _run(ImageSource source) async {
     final file = await _picker.pickImage(source: source, imageQuality: 95);
-    if (file == null) return;
+    if (file == null || !mounted) return;
+    await _recognize(file.path);
+  }
+
+  Future<void> _recognize(String path) async {
     setState(() {
       _busy = true;
       _status = 'Recognizing text…';
-      _imagePath = file.path;
+      _imagePath = path;
       _editor.clear();
       _original = '';
     });
     try {
-      final input = InputImage.fromFilePath(file.path);
+      final input = InputImage.fromFilePath(path);
       final result = await _recognizer.processImage(input);
+      if (!mounted) return;
       final text = result.text.trim();
       setState(() {
         _original = text;
@@ -68,9 +85,9 @@ class _OcrViewState extends State<OcrView> {
         );
       }
     } catch (e) {
-      setState(() => _status = 'OCR failed: $e');
+      if (mounted) setState(() => _status = 'OCR failed: $e');
     } finally {
-      setState(() => _busy = false);
+      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -93,10 +110,9 @@ class _OcrViewState extends State<OcrView> {
     );
     await File(path).writeAsString(text);
     if (!mounted) return;
-    await shareFiles(
-      context,
-      [XFile(path, mimeType: 'text/plain', name: 'ocr-text.txt')],
-    );
+    await shareFiles(context, [
+      XFile(path, mimeType: 'text/plain', name: 'ocr-text.txt'),
+    ]);
     await ToolScaffold.logAction(
       toolId: 'ai_ocr',
       toolName: 'OCR',
@@ -114,7 +130,7 @@ class _OcrViewState extends State<OcrView> {
     return ToolScaffold(
       toolId: 'ai_ocr',
       title: 'OCR',
-      body: Column(
+      body: ListView(
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
@@ -124,8 +140,9 @@ class _OcrViewState extends State<OcrView> {
                 Text(
                   'Extract text on-device, then edit before copying or sharing.',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.textTheme.bodySmall?.color
-                        ?.withValues(alpha: 0.7),
+                    color: theme.textTheme.bodySmall?.color?.withValues(
+                      alpha: 0.7,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -133,8 +150,9 @@ class _OcrViewState extends State<OcrView> {
                   children: [
                     Expanded(
                       child: FilledButton.icon(
-                        onPressed:
-                            _busy ? null : () => _run(ImageSource.camera),
+                        onPressed: _busy
+                            ? null
+                            : () => _run(ImageSource.camera),
                         icon: const Icon(Icons.photo_camera_rounded),
                         label: const Text('Camera'),
                       ),
@@ -142,8 +160,9 @@ class _OcrViewState extends State<OcrView> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: FilledButton.tonalIcon(
-                        onPressed:
-                            _busy ? null : () => _run(ImageSource.gallery),
+                        onPressed: _busy
+                            ? null
+                            : () => _run(ImageSource.gallery),
                         icon: const Icon(Icons.photo_library_rounded),
                         label: const Text('Gallery'),
                       ),
@@ -166,16 +185,14 @@ class _OcrViewState extends State<OcrView> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: AspectRatio(
-                  aspectRatio: 16 / 7,
-                  child: Image.file(
-                    File(_imagePath!),
-                    fit: BoxFit.cover,
-                  ),
+                child: SizedBox(
+                  height: 160,
+                  child: Image.file(File(_imagePath!), fit: BoxFit.cover),
                 ),
               ),
             ),
-          Expanded(
+          SizedBox(
+            height: 260,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: TextField(
@@ -207,10 +224,7 @@ class _OcrViewState extends State<OcrView> {
                   ),
                   const Spacer(),
                   if (dirty)
-                    TextButton(
-                      onPressed: _reset,
-                      child: const Text('Reset'),
-                    ),
+                    TextButton(onPressed: _reset, child: const Text('Reset')),
                 ],
               ),
             ),

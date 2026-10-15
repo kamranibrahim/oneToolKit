@@ -11,6 +11,7 @@ import '../../data/catalog/tool_catalog.dart';
 import '../../data/services/favorites_service.dart';
 import '../../data/services/history_service.dart';
 import '../../data/services/storage_service.dart';
+import '../../data/services/saved_work_service.dart';
 import '../../data/services/widget_sync_service.dart';
 import 'settings_controller.dart';
 
@@ -104,7 +105,7 @@ class SettingsView extends GetView<SettingsController> {
                   leading: const Icon(Icons.delete_outline_rounded),
                   title: const Text('Clear local data'),
                   subtitle: const Text(
-                    'Favorites, history, recent tools, and notepad',
+                    'Saved work, favorites, history, recent tools, and notepad',
                   ),
                   onTap: () => _confirmClear(context),
                 ),
@@ -114,10 +115,7 @@ class SettingsView extends GetView<SettingsController> {
                   leading: const Icon(Icons.privacy_tip_outlined),
                   title: const Text('Privacy'),
                   subtitle: const Text('What stays on your device'),
-                  onTap: () => _showInfo(
-                    'Privacy',
-                    StoreCopy.privacySummary,
-                  ),
+                  onTap: () => _showInfo('Privacy', StoreCopy.privacySummary),
                 ),
                 const Divider(height: 1),
                 FutureBuilder<PackageInfo>(
@@ -130,8 +128,9 @@ class SettingsView extends GetView<SettingsController> {
                       contentPadding: EdgeInsets.zero,
                       leading: const Icon(Icons.info_outline_rounded),
                       title: const Text('About'),
-                      subtitle:
-                          Text('$available of $total tools available · v$label'),
+                      subtitle: Text(
+                        '$available of $total tools available · v$label',
+                      ),
                       onTap: () => _showInfo(
                         AppConstants.appName,
                         '${StoreCopy.subtitle}\n\n'
@@ -162,7 +161,7 @@ class SettingsView extends GetView<SettingsController> {
       AlertDialog(
         title: const Text('Clear local data?'),
         content: const Text(
-          'This removes favorites, history, recent tools, and notepad notes '
+          'This removes saved tasks, their imported files and results, favorites, history, recent tools, and notepad notes '
           'from this device. Your files in Photos/Files are not deleted.',
         ),
         actions: [
@@ -178,6 +177,15 @@ class SettingsView extends GetView<SettingsController> {
       ),
     );
     if (ok != true) return;
+    try {
+      await Get.find<SavedWorkService>().clear();
+    } catch (e) {
+      Get.snackbar(
+        'Could not clear saved work',
+        e.toString().replaceFirst('Bad state: ', ''),
+      );
+      return;
+    }
     await Get.find<FavoritesService>().clearFavorites();
     final history = Get.find<HistoryService>();
     await history.clearHistory();
@@ -197,9 +205,7 @@ class SettingsView extends GetView<SettingsController> {
       AlertDialog(
         title: Text(title),
         content: SingleChildScrollView(child: Text(body)),
-        actions: [
-          TextButton(onPressed: Get.back, child: const Text('OK')),
-        ],
+        actions: [TextButton(onPressed: Get.back, child: const Text('OK'))],
       ),
     );
   }

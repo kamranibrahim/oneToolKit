@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf_combiner/models/merge_input.dart';
 import 'package:pdf_combiner/pdf_combiner.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/utils/share_helper.dart';
+import '../../../data/services/pending_share_service.dart';
 
 import '../../../widgets/tool_scaffold.dart';
 
@@ -20,6 +24,32 @@ class _PdfMergeViewState extends State<PdfMergeView> {
   final _files = <PlatformFile>[];
   bool _busy = false;
   String? _status;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !Get.isRegistered<PendingShareService>()) return;
+      final files = Get.find<PendingShareService>().takeFor('pdf_merge');
+      final added = <PlatformFile>[];
+      for (final f in files) {
+        final file = File(f.path);
+        if (!file.existsSync()) continue;
+        added.add(
+          PlatformFile(
+            name: p.basename(f.path),
+            path: f.path,
+            size: file.lengthSync(),
+          ),
+        );
+      }
+      if (added.isEmpty) return;
+      setState(() {
+        _files.addAll(added);
+        _status = null;
+      });
+    });
+  }
 
   Future<void> _pick() async {
     final result = await FilePicker.platform.pickFiles(
@@ -61,7 +91,9 @@ class _PdfMergeViewState extends State<PdfMergeView> {
       );
 
       if (!mounted) return;
-      await shareFiles(context, [XFile(resultPath, mimeType: 'application/pdf')]);
+      await shareFiles(context, [
+        XFile(resultPath, mimeType: 'application/pdf'),
+      ]);
       await ToolScaffold.logAction(
         toolId: 'pdf_merge',
         toolName: 'Merge PDF',
@@ -95,7 +127,9 @@ class _PdfMergeViewState extends State<PdfMergeView> {
                 Text(
                   'Select PDFs, drag to reorder, then merge into one file — entirely on device.',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                    color: theme.textTheme.bodySmall?.color?.withValues(
+                      alpha: 0.7,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -125,8 +159,9 @@ class _PdfMergeViewState extends State<PdfMergeView> {
                       return ListTile(
                         key: ValueKey('${file.path}-$index'),
                         leading: CircleAvatar(
-                          backgroundColor:
-                              theme.colorScheme.error.withValues(alpha: 0.12),
+                          backgroundColor: theme.colorScheme.error.withValues(
+                            alpha: 0.12,
+                          ),
                           child: Text(
                             '${index + 1}',
                             style: TextStyle(

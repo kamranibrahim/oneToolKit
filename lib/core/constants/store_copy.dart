@@ -35,7 +35,7 @@ OneToolkit is free to use. Optional features that need the network (like downloa
   static const String privacySummary =
       'OneToolkit does not require an account. Files you open are processed '
       'locally on your device. Favorites, history, and notes are stored only '
-      'on this device. On-device ML Kit features (OCR, translate) may download '
+      'on this device. Saved work keeps copies you explicitly import and their results in private app storage, excluded from automatic backup, until you delete them. On-device ML Kit features (OCR, translate) may download '
       'language or model packs from Google when you use them. We do not run ads '
       'or sell your data.';
 }

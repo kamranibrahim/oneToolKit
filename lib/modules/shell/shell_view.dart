@@ -7,6 +7,7 @@ import '../history/history_view.dart';
 import '../home/home_view.dart';
 import '../settings/settings_view.dart';
 import 'shell_controller.dart';
+import '../../widgets/pending_share_banner.dart';
 
 class ShellView extends GetView<ShellController> {
   const ShellView({super.key});
@@ -23,9 +24,16 @@ class ShellView extends GetView<ShellController> {
   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
-        body: IndexedStack(
-          index: controller.currentIndex.value,
-          children: _pages,
+        body: Column(
+          children: [
+            const PendingShareBanner(),
+            Expanded(
+              child: IndexedStack(
+                index: controller.currentIndex.value,
+                children: _pages,
+              ),
+            ),
+          ],
         ),
         bottomNavigationBar: NavigationBar(
           selectedIndex: controller.currentIndex.value,

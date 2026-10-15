@@ -56,7 +56,7 @@ class WidgetSyncService extends GetxService {
   Future<void> syncFavorites() async {
     try {
       final favorites = Get.find<FavoritesService>();
-      final ids = favorites.favorites.take(4).toList();
+      final ids = favorites.shortcutIds(limit: 4);
       final names = <String>[];
       for (final id in ids) {
         final tool = ToolCatalog.byId(id);
