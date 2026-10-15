@@ -3,10 +3,13 @@ import UniformTypeIdentifiers
 import UIKit
 
 final class ShareViewController: UIViewController {
+  private var handling = false
   private let appGroup = "group.com.kamranibrahim.onetoolkit"
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
+    guard !handling else { return }
+    handling = true
     Task { await handleShare() }
   }
 
@@ -26,20 +29,42 @@ final class ShareViewController: UIViewController {
       return
     }
     let inbox = container.appendingPathComponent("Inbox", isDirectory: true)
-    try? FileManager.default.createDirectory(at: inbox, withIntermediateDirectories: true)
+    let batch = UUID().uuidString
+    let staging = container.appendingPathComponent("Staging/\(batch)", isDirectory: true)
+    do {
+      try FileManager.default.createDirectory(at: inbox, withIntermediateDirectories: true)
+      try FileManager.default.createDirectory(at: staging, withIntermediateDirectories: true)
+    } catch {
+      extensionContext?.cancelRequest(withError: error)
+      return
+    }
 
     for item in items {
       guard let attachments = item.attachments else { continue }
       for provider in attachments {
-        if let dest = await copy(provider: provider, to: inbox) {
+        if let dest = await copy(provider: provider, to: staging) {
           manifest.append(["name": dest.lastPathComponent, "mime": dest.mime])
+        } else {
+          // Leave previously published batches untouched on partial failure.
+          try? FileManager.default.removeItem(at: staging)
+          extensionContext?.cancelRequest(withError: NSError(
+            domain: "OneToolkit.Share", code: 1,
+            userInfo: [NSLocalizedDescriptionKey: "Could not copy a shared file. Please try sharing again."]
+          ))
+          return
         }
       }
     }
 
-    let manifestURL = inbox.appendingPathComponent("manifest.json")
-    if let data = try? JSONSerialization.data(withJSONObject: manifest) {
-      try? data.write(to: manifestURL)
+    do {
+      let data = try JSONSerialization.data(withJSONObject: manifest)
+      try data.write(to: staging.appendingPathComponent("manifest.json"), options: .atomic)
+      // Publish only complete batches, including original attachment order.
+      try FileManager.default.moveItem(at: staging, to: inbox.appendingPathComponent(batch))
+    } catch {
+      try? FileManager.default.removeItem(at: staging)
+      extensionContext?.cancelRequest(withError: error)
+      return
     }
 
     openHost()
@@ -75,13 +100,10 @@ final class ShareViewController: UIViewController {
         let safe = url.lastPathComponent
           .replacingOccurrences(of: "/", with: "_")
           .replacingOccurrences(of: "\\", with: "_")
-        let dest = inbox.appendingPathComponent("\(Int(Date().timeIntervalSince1970))_\(safe)")
+        let dest = inbox.appendingPathComponent("\(UUID().uuidString)_\(safe)")
         do {
-          if FileManager.default.fileExists(atPath: dest.path) {
-            try FileManager.default.removeItem(at: dest)
-          }
           try FileManager.default.copyItem(at: url, to: dest)
-          let mime = mimeFor(url: dest, typeIdentifier: type)
+          let mime = self.mimeFor(url: dest, typeIdentifier: type)
           continuation.resume(
             returning: CopiedFile(lastPathComponent: dest.lastPathComponent, mime: mime)
           )

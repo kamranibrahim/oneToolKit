@@ -16,10 +16,16 @@ class PendingShareService extends GetxService with WidgetsBindingObserver {
   static const channelName = 'com.kamranibrahim.onetoolkit/share';
 
   final pending = <SharedFile>[].obs;
+  final intakeError = RxnString();
   final MethodChannel _channel = const MethodChannel(channelName);
 
   bool _presenting = false;
+  bool _pullAfterPresentation = false;
+  String? _handoffTool;
+  Set<String>? _handoffPaths;
+  Future<void>? _pulling;
   bool _presented = false;
+  final _acceptedPaths = <String>{};
 
   @override
   void onInit() {
@@ -35,6 +41,7 @@ class PendingShareService extends GetxService with WidgetsBindingObserver {
   @override
   void onClose() {
     WidgetsBinding.instance.removeObserver(this);
+    _channel.setMethodCallHandler(null);
     super.onClose();
   }
 
@@ -45,111 +52,127 @@ class PendingShareService extends GetxService with WidgetsBindingObserver {
     }
   }
 
-  Future<void> pullFromNative() async {
-    await _pullMethod('takePending');
-    await _pullMethod('takeInbox');
+  Future<void> pullFromNative() => _pulling ??= _pullAll();
+
+  Future<void> _pullAll() async {
+    try {
+      intakeError.value = null;
+      await _pullMethod('takePending');
+      await _pullMethod('takeInbox');
+    } finally {
+      _pulling = null;
+    }
   }
 
   Future<void> _pullMethod(String method) async {
     try {
       final raw = await _channel.invokeMethod<dynamic>(method);
-      _ingestRows(raw);
+      final accepted = _ingestRows(raw);
+      if (accepted.isNotEmpty) {
+        await _channel.invokeMethod<void>('acknowledge', accepted);
+      }
     } catch (_) {
       // Channel missing on desktop / unimplemented takeInbox on Android.
     }
   }
 
-  void _ingestRows(dynamic raw) {
-    if (raw is! List) return;
+  List<String> _ingestRows(dynamic raw) {
+    if (raw is! List) return const [];
+    final accepted = <String>[];
     var added = false;
     for (final row in raw) {
       if (row is! Map) continue;
+      if (row['error'] is String) {
+        intakeError.value = row['error'] as String;
+        continue;
+      }
       final path = row['path']?.toString() ?? '';
       final mime = row['mime']?.toString() ?? '';
       if (path.isEmpty) continue;
       if (!File(path).existsSync()) continue;
-      pending.add(SharedFile(path: path, mime: mime.isEmpty ? 'application/octet-stream' : mime));
+      accepted.add(path);
+      if (!_acceptedPaths.add(path)) continue;
+      pending.add(
+        SharedFile(
+          path: path,
+          mime: mime.isEmpty ? 'application/octet-stream' : mime,
+        ),
+      );
       added = true;
     }
     if (added) _presented = false;
+    return accepted;
   }
 
-  Future<void> presentIfNeeded() async {
-    if (_presenting) return;
-    await pullFromNative();
-    if (pending.isEmpty) {
-      _presented = false;
+  Future<void> presentIfNeeded({bool force = false}) async {
+    if (_presenting) {
+      _pullAfterPresentation = true;
       return;
     }
-    if (Get.currentRoute == AppRoutes.onboarding) return;
-    if (_presented) return;
-
-    final ids = suggestedToolIds(pending.map((e) => e.mime));
-    if (ids.isEmpty) {
-      pending.clear();
-      _presented = false;
-      Get.snackbar(
-        "Can't open this file type",
-        '',
-        snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 2),
-      );
-      return;
-    }
-    if (ids.length == 1) {
-      _presented = true;
-      _open(ids.first);
-      return;
-    }
-
     _presenting = true;
-    _presented = true;
-    var opened = false;
+    String? selected;
     try {
+      await pullFromNative();
+      if (pending.isEmpty) {
+        _presented = false;
+        return;
+      }
+      if (Get.currentRoute == AppRoutes.onboarding) return;
+      if (_presented && !force) return;
+      _presented = true;
+      final offered = pending.toList();
+      final ids = suggestedToolIds(offered.map((e) => e.mime));
+      // Even a single action uses the chooser so retained inputs can be
+      // inspected or explicitly discarded without unexpectedly opening a tool.
       await showShareTargetSheet(
         ids: ids,
+        files: offered,
+        onDiscard: discard,
         onPick: (id) {
-          opened = true;
-          _open(id);
+          selected = id;
+          _handoffTool = id;
+          _handoffPaths = offered.map((file) => file.path).toSet();
         },
       );
     } finally {
       _presenting = false;
-      if (!opened) {
-        pending.clear();
-        _presented = false;
+      if (_pullAfterPresentation) {
+        _pullAfterPresentation = false;
+        // A new native share may arrive while the chooser is open. Intake it
+        // after this choice, without expanding the user's selected batch.
+        unawaited(pullFromNative());
       }
+    }
+    if (selected != null) {
+      final tool = ToolCatalog.byId(selected!);
+      if (tool != null) await openTool(tool, preventDuplicates: false);
     }
   }
 
-  void _open(String toolId) {
-    if (toolId == 'ai_ocr') {
-      takeFor(toolId);
-    }
-    final tool = ToolCatalog.byId(toolId);
-    if (tool == null) {
-      pending.clear();
-      _presented = false;
-      return;
-    }
-    unawaited(openTool(tool));
+  void discard() {
+    pending.clear();
+    _handoffTool = null;
+    _handoffPaths = null;
+    _presented = false;
   }
 
   List<SharedFile> takeFor(String toolId) {
-    final wantPdf = toolId == 'pdf_merge';
-    final wantImage = toolId == 'image_compress' ||
-        toolId == 'images_to_pdf' ||
-        toolId == 'ai_ocr';
+    final allowed = _handoffTool == toolId ? _handoffPaths : null;
     final taken = pending
-        .where((e) {
-          final k = shareKind(e.mime);
-          if (wantPdf) return k == ShareKind.pdf;
-          if (wantImage) return k == ShareKind.image;
-          return false;
-        })
+        .where(
+          (file) =>
+              (allowed == null || allowed.contains(file.path)) &&
+              acceptsSharedMime(toolId, file.mime),
+        )
+        .take(sharedInputLimit(toolId))
         .toList();
-    pending.clear();
-    _presented = false;
+    if (_handoffTool == toolId) {
+      _handoffTool = null;
+      _handoffPaths = null;
+    }
+    final paths = taken.map((file) => file.path).toSet();
+    pending.removeWhere((file) => paths.contains(file.path));
+    if (pending.isEmpty) _presented = false;
     return taken;
   }
 }

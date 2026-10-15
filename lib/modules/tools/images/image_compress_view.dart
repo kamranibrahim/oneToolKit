@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import '../../../core/utils/share_helper.dart';
-import '../../../data/models/shared_file.dart';
 import '../../../data/services/pending_share_service.dart';
 
 import '../../../widgets/tool_scaffold.dart';
@@ -32,25 +31,17 @@ class _ImageCompressViewState extends State<ImageCompressView> {
   @override
   void initState() {
     super.initState();
-    final share = Get.isRegistered<PendingShareService>()
-        ? Get.find<PendingShareService>()
-        : null;
-    final files = share?.takeFor('image_compress') ?? const <SharedFile>[];
-    if (files.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (!mounted) return;
-        final file = XFile(files.first.path, mimeType: files.first.mime);
-        final bytes = await file.readAsBytes();
-        if (!mounted) return;
-        setState(() {
-          _original = file;
-          _originalSize = bytes.length;
-          _compressed = null;
-          _compressedSize = null;
-        });
-        await _compress();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted || !Get.isRegistered<PendingShareService>()) return;
+      final files = Get.find<PendingShareService>().takeFor('image_compress');
+      if (files.isEmpty) return;
+      setState(() {
+        _original = XFile(files.first.path, mimeType: files.first.mime);
+        _compressed = null;
+        _compressedSize = null;
       });
-    }
+      await _compress();
+    });
   }
 
   Future<void> _pick() async {
@@ -74,21 +65,26 @@ class _ImageCompressViewState extends State<ImageCompressView> {
       final decoded = img.decodeImage(bytes);
       if (decoded == null) throw Exception('Unsupported image');
       final encoded = img.encodeJpg(decoded, quality: _quality);
+      if (!mounted) return;
       setState(() {
+        _originalSize = bytes.length;
         _compressed = Uint8List.fromList(encoded);
         _compressedSize = encoded.length;
       });
     } catch (e) {
-      ToolScaffold.copy('', message: 'Compress failed');
+      if (mounted) ToolScaffold.copy('', message: 'Compress failed');
     } finally {
-      setState(() => _busy = false);
+      if (mounted) setState(() => _busy = false);
     }
   }
 
   Future<void> _share() async {
     if (_compressed == null) return;
     final dir = await getTemporaryDirectory();
-    final path = p.join(dir.path, 'compressed_${DateTime.now().millisecondsSinceEpoch}.jpg');
+    final path = p.join(
+      dir.path,
+      'compressed_${DateTime.now().millisecondsSinceEpoch}.jpg',
+    );
     await File(path).writeAsBytes(_compressed!);
     if (!mounted) return;
     await shareFiles(context, [XFile(path)]);
@@ -124,7 +120,11 @@ class _ImageCompressViewState extends State<ImageCompressView> {
             const SizedBox(height: 16),
             ClipRRect(
               borderRadius: BorderRadius.circular(14),
-              child: Image.file(File(_original!.path), height: 200, fit: BoxFit.cover),
+              child: Image.file(
+                File(_original!.path),
+                height: 200,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(height: 12),
             Text('Quality: $_quality'),
@@ -141,10 +141,11 @@ class _ImageCompressViewState extends State<ImageCompressView> {
             ),
             Text('Original: ${_formatSize(_originalSize)}'),
             Text('Compressed: ${_formatSize(_compressedSize)}'),
-            if (_busy) const Padding(
-              padding: EdgeInsets.all(16),
-              child: Center(child: CircularProgressIndicator()),
-            ),
+            if (_busy)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(child: CircularProgressIndicator()),
+              ),
             const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: _compressed == null || _busy ? null : _share,

@@ -1,6 +1,7 @@
 abstract final class AppRoutes {
   static const String shell = '/';
   static const String search = '/search';
+  static const String savedWork = '/saved-work';
   static const String categoryDetail = '/category';
   static const String comingSoon = '/coming-soon';
   static const String onboarding = '/onboarding';

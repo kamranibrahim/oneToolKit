@@ -28,3 +28,19 @@ List<String> suggestedToolIds(Iterable<String> mimes) {
   }
   return const ['pdf_merge', 'images_to_pdf'];
 }
+
+/// Explicit input contracts prevent single-image tools dropping a batch.
+bool acceptsSharedMime(String toolId, String mime) {
+  final kind = shareKind(mime);
+  return switch (toolId) {
+    'pdf_merge' => kind == ShareKind.pdf,
+    'image_compress' || 'images_to_pdf' || 'ai_ocr' => kind == ShareKind.image,
+    _ => false,
+  };
+}
+
+int sharedInputLimit(String toolId) => switch (toolId) {
+  'image_compress' || 'ai_ocr' => 1,
+  'pdf_merge' || 'images_to_pdf' => 0x7fffffff,
+  _ => 0,
+};

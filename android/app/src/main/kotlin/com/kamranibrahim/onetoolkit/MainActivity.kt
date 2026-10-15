@@ -11,6 +11,8 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
 import java.io.FileOutputStream
+import java.util.UUID
+import java.util.concurrent.Executors
 
 class MainActivity : FlutterActivity() {
     companion object {
@@ -18,17 +20,30 @@ class MainActivity : FlutterActivity() {
     }
 
     private val pending = ArrayList<HashMap<String, String>>()
+    private val copies = Executors.newSingleThreadExecutor()
     private var channel: MethodChannel? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger,
+            "com.kamranibrahim.onetoolkit/saved_work").setMethodCallHandler { call, result ->
+            if (call.method == "directory") {
+                val directory = File(noBackupFilesDir, "saved_work")
+                if (directory.isDirectory || directory.mkdirs()) result.success(directory.absolutePath)
+                else result.error("storage", "Private saved storage is unavailable", null)
+            } else result.notImplemented()
+        }
         channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
         channel?.setMethodCallHandler { call, result ->
             when (call.method) {
                 "takePending" -> {
                     val copy = ArrayList(pending)
-                    pending.clear()
                     result.success(copy)
+                }
+                "acknowledge" -> {
+                    val paths = (call.arguments as? List<*>)?.filterIsInstance<String>()?.toSet() ?: emptySet()
+                    pending.removeAll { it["path"] in paths }
+                    result.success(null)
                 }
                 else -> result.notImplemented()
             }
@@ -38,35 +53,49 @@ class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ingest(intent)
-        channel?.invokeMethod("onShared", null)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         ingest(intent)
-        channel?.invokeMethod("onShared", null)
     }
 
     private fun ingest(intent: Intent?) {
         if (intent == null) return
         val uris = urisFrom(intent) ?: return
-        val ts = System.currentTimeMillis()
-        for ((index, uri) in uris.withIndex()) {
-            try {
-                val dest = copyUri(uri, ts, index) ?: continue
-                val mime = resolveMime(intent, uri)
-                pending.add(
-                    hashMapOf(
-                        "path" to dest.absolutePath,
-                        "mime" to mime,
-                    ),
-                )
-            } catch (_: Exception) {
-                // Skip failed copies.
+        // Metadata queries and copies run serially off the activity thread.
+        val declaredMime = intent.type
+        intent.action = null
+        copies.execute {
+            val rows = ArrayList<HashMap<String, String>>()
+            for (uri in uris) {
+                try {
+                    val name = safeName(displayName(uri) ?: "file.bin")
+                    val mime = resolveMime(declaredMime, uri)
+                    val dest = copyUri(uri, name)
+                    rows.add(hashMapOf("path" to dest.absolutePath, "mime" to mime))
+                } catch (_: Exception) {
+                    // Surface failed copies without dropping successful inputs.
+                    runOnUiThread {
+                        android.widget.Toast.makeText(this,
+                            "Could not import a shared file. Please share it again.",
+                            android.widget.Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+            runOnUiThread {
+                pending.addAll(rows)
+                channel?.invokeMethod("onShared", null)
             }
         }
-        intent.action = null
+    }
+
+    override fun onDestroy() {
+        copies.shutdown()
+        channel?.setMethodCallHandler(null)
+        channel = null
+        super.onDestroy()
     }
 
     private fun urisFrom(intent: Intent): List<Uri>? {
@@ -101,31 +130,34 @@ class MainActivity : FlutterActivity() {
         return list
     }
 
-    private fun resolveMime(intent: Intent, uri: Uri): String {
-        val declared = intent.type
+    private fun resolveMime(declared: String?, uri: Uri): String {
+        val actual = contentResolver.getType(uri)
+        if (!actual.isNullOrBlank() && !actual.contains('*')) return actual
         if (!declared.isNullOrBlank() &&
             !declared.contains('*') &&
             !declared.contains(';')
         ) {
             return declared
         }
-        return contentResolver.getType(uri) ?: "application/octet-stream"
+        return "application/octet-stream"
     }
 
-    private fun copyUri(uri: Uri, ts: Long, index: Int): File? {
-        val name = safeName(displayName(uri) ?: uri.lastPathSegment ?: "file.bin")
-        val dest = File(cacheDir, "share_${ts}_${index}_$name")
-        val input = contentResolver.openInputStream(uri) ?: return null
-        input.use { stream ->
-            FileOutputStream(dest).use { out ->
-                stream.copyTo(out)
+    private fun copyUri(uri: Uri, name: String): File {
+        val dest = File(cacheDir, "share_${UUID.randomUUID()}_$name")
+        try {
+            val input = contentResolver.openInputStream(uri)
+                ?: throw java.io.IOException("Cannot open shared file")
+            input.use { stream ->
+                FileOutputStream(dest).use { out -> stream.copyTo(out) }
             }
-        }
-        if (!dest.exists() || dest.length() <= 0L) {
+            if (!dest.exists() || dest.length() <= 0L) {
+                throw java.io.IOException("Empty shared file")
+            }
+            return dest
+        } catch (error: Exception) {
             dest.delete()
-            return null
+            throw error
         }
-        return dest
     }
 
     private fun displayName(uri: Uri): String? {

@@ -8,7 +8,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../../../core/utils/share_helper.dart';
-import '../../../data/models/shared_file.dart';
 import '../../../data/services/pending_share_service.dart';
 
 import '../../../widgets/tool_scaffold.dart';
@@ -28,18 +27,14 @@ class _ImagesToPdfViewState extends State<ImagesToPdfView> {
   @override
   void initState() {
     super.initState();
-    final share = Get.isRegistered<PendingShareService>()
-        ? Get.find<PendingShareService>()
-        : null;
-    final files = share?.takeFor('images_to_pdf') ?? const <SharedFile>[];
-    if (files.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        setState(() {
-          _images.addAll(files.map((f) => XFile(f.path, mimeType: f.mime)));
-        });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !Get.isRegistered<PendingShareService>()) return;
+      final files = Get.find<PendingShareService>().takeFor('images_to_pdf');
+      if (files.isEmpty) return;
+      setState(() {
+        _images.addAll(files.map((f) => XFile(f.path, mimeType: f.mime)));
       });
-    }
+    });
   }
 
   Future<void> _pick() async {
@@ -59,12 +54,16 @@ class _ImagesToPdfViewState extends State<ImagesToPdfView> {
         doc.addPage(
           pw.Page(
             pageFormat: PdfPageFormat.a4,
-            build: (_) => pw.Center(child: pw.Image(image, fit: pw.BoxFit.contain)),
+            build: (_) =>
+                pw.Center(child: pw.Image(image, fit: pw.BoxFit.contain)),
           ),
         );
       }
       final dir = await getTemporaryDirectory();
-      final path = p.join(dir.path, 'images_${DateTime.now().millisecondsSinceEpoch}.pdf');
+      final path = p.join(
+        dir.path,
+        'images_${DateTime.now().millisecondsSinceEpoch}.pdf',
+      );
       final out = File(path);
       await out.writeAsBytes(await doc.save());
       if (!mounted) return;
@@ -136,10 +135,15 @@ class _ImagesToPdfViewState extends State<ImagesToPdfView> {
                           ),
                         ),
                         title: Text('Page ${index + 1}'),
-                        subtitle: Text(p.basename(file.path), maxLines: 1, overflow: TextOverflow.ellipsis),
+                        subtitle: Text(
+                          p.basename(file.path),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         trailing: IconButton(
                           icon: const Icon(Icons.close_rounded),
-                          onPressed: () => setState(() => _images.removeAt(index)),
+                          onPressed: () =>
+                              setState(() => _images.removeAt(index)),
                         ),
                       );
                     },

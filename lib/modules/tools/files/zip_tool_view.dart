@@ -1,14 +1,12 @@
-import 'dart:io';
-
-import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 import 'package:share_plus/share_plus.dart';
 import '../../../core/utils/share_helper.dart';
 
 import '../../../widgets/tool_scaffold.dart';
+import '../../../data/processing/archive_operations.dart';
 
 class ZipToolView extends StatefulWidget {
   const ZipToolView({super.key});
@@ -23,6 +21,7 @@ class _ZipToolViewState extends State<ZipToolView>
   final _createFiles = <PlatformFile>[];
   String? _extractSummary;
   bool _busy = false;
+  List<String> _extractedPaths = [];
 
   @override
   void initState() {
@@ -38,24 +37,21 @@ class _ZipToolViewState extends State<ZipToolView>
 
   Future<void> _pickCreateFiles() async {
     final result = await FilePicker.platform.pickFiles(allowMultiple: true);
-    if (result == null) return;
-    setState(() => _createFiles.addAll(result.files.where((f) => f.path != null)));
+    if (result == null || !mounted) return;
+    setState(
+      () => _createFiles.addAll(result.files.where((f) => f.path != null)),
+    );
   }
 
   Future<void> _createZip() async {
     if (_createFiles.isEmpty) return;
     setState(() => _busy = true);
     try {
+      final inputs = _createFiles
+          .map((f) => ArchiveInput(f.path!, f.name))
+          .toList();
       final dir = await getTemporaryDirectory();
-      final outPath = p.join(
-        dir.path,
-        'archive_${DateTime.now().millisecondsSinceEpoch}.zip',
-      );
-      final encoder = ZipFileEncoder()..create(outPath);
-      for (final file in _createFiles) {
-        await encoder.addFile(File(file.path!), file.name);
-      }
-      await encoder.close();
+      final outPath = await ArchiveOperations.create(inputs, dir.path);
       if (!mounted) return;
       await shareFiles(context, [XFile(outPath, mimeType: 'application/zip')]);
       await ToolScaffold.logAction(
@@ -64,8 +60,10 @@ class _ZipToolViewState extends State<ZipToolView>
         action: 'Created',
         detail: '${_createFiles.length} files',
       );
+    } catch (e) {
+      if (mounted) setState(() => _extractSummary = 'Create failed: $e');
     } finally {
-      setState(() => _busy = false);
+      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -74,44 +72,44 @@ class _ZipToolViewState extends State<ZipToolView>
       type: FileType.custom,
       allowedExtensions: const ['zip'],
     );
-    if (result == null || result.files.isEmpty || result.files.first.path == null) {
+    if (!mounted ||
+        result == null ||
+        result.files.isEmpty ||
+        result.files.first.path == null) {
       return;
     }
-    setState(() => _busy = true);
+    setState(() {
+      _busy = true;
+      _extractedPaths = [];
+      _extractSummary = null;
+    });
     try {
       final zipPath = result.files.first.path!;
-      final bytes = await File(zipPath).readAsBytes();
-      final archive = ZipDecoder().decodeBytes(bytes);
       final dir = await getTemporaryDirectory();
-      final outDir = Directory(
-        p.join(dir.path, 'unzip_${DateTime.now().millisecondsSinceEpoch}'),
-      );
-      await outDir.create(recursive: true);
-
-      final extracted = <XFile>[];
-      for (final file in archive) {
-        if (!file.isFile) continue;
-        final outPath = p.join(outDir.path, p.basename(file.name));
-        final out = File(outPath);
-        await out.writeAsBytes(file.content as List<int>);
-        extracted.add(XFile(outPath));
-      }
-
-      setState(() => _extractSummary = 'Extracted ${extracted.length} file(s)');
-      if (extracted.isNotEmpty) {
-        if (!mounted) return;
-        await shareFiles(context, extracted);
-      }
+      final paths = await ArchiveOperations.extract(zipPath, dir.path);
+      if (!mounted) return;
+      setState(() {
+        _extractedPaths = paths;
+        _extractSummary = 'Extracted ${paths.length} files';
+      });
       await ToolScaffold.logAction(
         toolId: 'zip_tool',
         toolName: 'ZIP Archive',
         action: 'Extracted',
-        detail: '${extracted.length} files',
+        detail: '${paths.length} files',
       );
     } catch (e) {
-      setState(() => _extractSummary = 'Extract failed: $e');
+      if (mounted) setState(() => _extractSummary = 'Extract failed: $e');
     } finally {
-      setState(() => _busy = false);
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _shareExtracted(List<String> paths) async {
+    try {
+      await shareFiles(context, paths.map((path) => XFile(path)).toList());
+    } catch (e) {
+      if (mounted) setState(() => _extractSummary = 'Share failed: $e');
     }
   }
 
@@ -132,10 +130,7 @@ class _ZipToolViewState extends State<ZipToolView>
           Expanded(
             child: TabBarView(
               controller: _tabs,
-              children: [
-                _buildCreate(),
-                _buildExtract(),
-              ],
+              children: [_buildCreate(), _buildExtract()],
             ),
           ),
         ],
@@ -163,16 +158,27 @@ class _ZipToolViewState extends State<ZipToolView>
                   itemBuilder: (context, index) {
                     final file = _createFiles[index];
                     return ListTile(
-                      title: Text(file.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      title: Text(
+                        file.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       trailing: IconButton(
                         icon: const Icon(Icons.close_rounded),
-                        onPressed: () =>
-                            setState(() => _createFiles.removeAt(index)),
+                        onPressed: _busy
+                            ? null
+                            : () =>
+                                  setState(() => _createFiles.removeAt(index)),
                       ),
                     );
                   },
                 ),
         ),
+        if (_extractSummary != null)
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(_extractSummary!),
+          ),
         Padding(
           padding: const EdgeInsets.all(16),
           child: FilledButton(
@@ -191,7 +197,7 @@ class _ZipToolViewState extends State<ZipToolView>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text(
-            'Pick a ZIP file to extract locally, then share the contents.',
+            'Extract locally with folders preserved. Supports ZIPs up to 100 MB and 256 MB of extracted files.',
           ),
           const SizedBox(height: 16),
           FilledButton.icon(
@@ -202,6 +208,44 @@ class _ZipToolViewState extends State<ZipToolView>
           if (_extractSummary != null) ...[
             const SizedBox(height: 16),
             Text(_extractSummary!, textAlign: TextAlign.center),
+          ],
+          if (_extractedPaths.isNotEmpty) ...[
+            if (_extractedPaths
+                    .map(p.basename)
+                    .map((name) => name.toLowerCase())
+                    .toSet()
+                    .length ==
+                _extractedPaths.length)
+              TextButton.icon(
+                onPressed: _busy
+                    ? null
+                    : () => _shareExtracted(_extractedPaths),
+                icon: const Icon(Icons.ios_share),
+                label: const Text('Share all files'),
+              )
+            else
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  'Some folders contain files with the same name. Share those files individually.',
+                ),
+              ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _extractedPaths.length,
+                itemBuilder: (context, index) {
+                  final path = _extractedPaths[index];
+                  return ListTile(
+                    title: Text(p.basename(path)),
+                    trailing: IconButton(
+                      tooltip: 'Share ${p.basename(path)}',
+                      icon: const Icon(Icons.ios_share),
+                      onPressed: () => _shareExtracted([path]),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ],
       ),

@@ -8,12 +8,6 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>OneToolkit</string>
-	<key>NSCameraUsageDescription</key>
-	<string>OneToolkit needs camera access to scan QR codes and documents.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>OneToolkit needs photo access to compress, resize, and convert images locally.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>OneToolkit saves processed images to your library when you choose to export them.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -28,8 +22,6 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -43,8 +35,16 @@
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>OneToolkit needs camera access to scan QR codes and documents.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>OneToolkit saves processed images to your library when you choose to export them.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>OneToolkit needs photo access to compress, resize, and convert images locally.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
